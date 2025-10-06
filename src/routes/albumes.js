@@ -1,7 +1,11 @@
-/**
- * Rutas para álbumes
- * Los estudiantes deben implementar todas las rutas relacionadas con álbumes
- */
+import { Router } from "express";
+//import Album from "../models/Album.js";
 
-const express = require("express");
-const router = express.Router();
+const albumesRouter = Router();
+
+// Funcion para buscar todos los Albumes.
+albumesRouter.get("/", async (req, res) => {
+    res.send("Obtener todos los Albumes");
+});
+
+export default albumesRouter;

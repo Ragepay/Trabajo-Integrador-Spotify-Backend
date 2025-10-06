@@ -1,0 +1,20 @@
+{
+	"name": "TRABAJO-INTEGRADOR-SPOTIFY-BACKEND",
+	"version": "1.0.0",
+	"description": "plataforma de streaming musical (estilo Spotify) con Node.js + Express + MySQL, que contemple un modelo relacional correcto, endpoints REST bien documentados y validaciones para prevenir errores frecuentes",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"start": "node index.js",
+		"dev": "node --watch index.js",
+		"push": "git add . && git commit -m \"1-feat: Clonacion del proyecto, minimos cambios iniciales. \" && git push"
+	},
+	"dependencies": {
+		"cors": "^2.8.5",
+		"express": "^5.1.0",
+		"jsonwebtoken": "^9.0.2",
+		"morgan": "^1.10.0",
+		"mysql2": "^3.15.1",
+		"sequelize": "^6.37.7"
+	}
+}

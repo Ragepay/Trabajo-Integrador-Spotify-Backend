@@ -311,6 +311,24 @@ Se incluye un archivo **`api.http`** (VS Code – REST Client) con solicitudes l
 
 ---
 
+## Buenas Prácticas de Git y Commits 📝
+
+Para mantener un historial de cambios limpio y profesional, es fundamental que sigan estas buenas prácticas al trabajar con Git:
+
+-   **Realicen Commits Pequeños y Frecuentes**: En lugar de hacer un solo commit gigante al final, hagan commits pequeños cada vez que completen una unidad de trabajo lógica (por ejemplo, al terminar la implementación de un endpoint, al corregir un bug, o al actualizar la documentación). Esto facilita la revisión del código y la identificación de errores.
+
+-   **Escriban Mensajes de Commit Descriptivos**: Un buen mensaje de commit debe ser claro y conciso. Sigan una convención para que sea aún más legible. Les sugerimos el formato de *Commits Convencionales*:
+    -   `feat:` para nuevas funcionalidades (ej. `feat: Implementa endpoint GET /productos/:codigo`).
+    -   `fix:` para correcciones de errores (ej. `fix: Corrige error 404 en la búsqueda por categoría`).
+    -   `docs:` para cambios en la documentación (ej. `docs: Actualiza README con ejemplos de uso`).
+    -   `refactor:` para cambios en el código que no añaden funcionalidades ni corrigen errores.
+    -   `test:` para añadir o modificar pruebas.
+
+Un buen historial de commits no solo demuestra profesionalismo, sino que también es una herramienta invaluable para ustedes y para cualquier persona que trabaje en el proyecto en el futuro.
+
+---
+
+
 ## 📚 Recursos de Ayuda
 
 - **README.md**: Especificación completa del proyecto
@@ -342,7 +360,7 @@ Se incluye un archivo **`api.http`** (VS Code – REST Client) con solicitudes l
 
 ## 🏁 Puesta en marcha
 1) Crear BD y tablas con `scripts.sql`.
-2) `npm i` · configurar `.env` · `npm run dev`.
+2) `pnpm i` · configurar `.env` · `pnpm dev`.
 3) Abrir `api.http` en VS Code y ejecutar solicitudes.
 
 ¡Éxito en tu proyecto! 🚀
