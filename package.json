@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node index.js",
 		"dev": "node --watch index.js",
-		"push": "git add . && git commit -m \"1-feat: Clonacion del proyecto, minimos cambios iniciales. \" && git push"
+		"push": "git add . && git commit -m \"3-fix: Repositorio inicial listo para empezar a trabajar...\" && git push"
 	},
 	"dependencies": {
 		"cors": "^2.8.5",
