@@ -121,18 +121,12 @@ Usa `Datos_Spotify.xlsx` o `Datos_Spotify.json` (artistas, discográficas, álbu
 - Continuar con `Album.js`, `Cancion.js`, `Genero.js`
 - Terminar con `Playlist.js`, `Suscripcion.js`, `MetodoPago.js`, `Pago.js`
 
-### 3. **Middlewares** 
-- `validaciones.js` - Esquemas Joi
-- `errorHandler.js` - Manejo de errores
-- `rateLimiting.js` - Limitación de requests
-
 ### 4. **Controladores** 
 - Implementar lógica de negocio para cada entidad
 - Usar los modelos creados anteriormente
 
 ### 5. **Rutas** 
 - Conectar controladores con endpoints
-- Aplicar middlewares de validación
 
 ### 6. **⭐ Ejercicios Adicionales** 
 - `vistasController.js` - Consultas con JOINs complejos
