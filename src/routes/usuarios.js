@@ -1,7 +1,11 @@
-/**
- * Rutas para usuarios
- * Los estudiantes deben implementar todas las rutas relacionadas con usuarios
- */
+import { Router } from "express";
+import Usuario from "../models/Usuario.js";
 
-const express = require("express");
-const router = express.Router();
+const usuariosRouter = Router();
+
+// Funcion para buscar todos los Usuarios.
+usuariosRouter.get("/", async (req, res) => {
+    res.send("Obtener todos los Usuarios.");
+});
+
+export default usuariosRouter;

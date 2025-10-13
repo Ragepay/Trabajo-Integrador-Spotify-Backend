@@ -1,5 +1,5 @@
 import { Router } from "express";
-//import Album from "../models/Album.js";
+import Artista from "../models/Artista.js";
 
 const artistasRouter = Router();
 
