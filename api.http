@@ -1,6 +1,6 @@
 
 ### VARIABLES GLOBALES
-@baseUrl = http://localhost:3000/api/v1
+@baseUrl = http://localhost:9000/api/v1
 @json = application/json
 
 ### ==========================
@@ -11,13 +11,15 @@ POST {{baseUrl}}/usuarios
 Content-Type: {{json}}
 
 {
-  "email": "ana.garcia@example.com",
+  "usuario": "anagarcia99",
+  "nombreCompleto": "Ana García",
+  "email": "ana.garcia@email.com",
   "password": "Secr3t0!",
-  "fecha_nac": "1995-05-20",
+  "fecha_nacimiento": "1995-05-20",
   "sexo": "F",
-  "cp": "4600",
+  "codigo_postal": "4600",
   "id_pais": 10,
-  "tipo_usuario_actual": 1
+  "tipo_usuario": 1
 }
 
 ### Crear usuario (ERROR: falta email)

@@ -1,7 +1,11 @@
-/**
- * Rutas para métodos de pago
- * Los estudiantes deben implementar todas las rutas relacionadas con métodos de pago
- */
+import { Router } from "express";
+import MetodoPago from "../models/MetodoPago.js";
 
-const express = require("express");
-const router = express.Router();
+const metodosPagoRouter = Router();
+
+// Funcion para buscar todos los Metodos de Pago.
+metodosPagoRouter.get("/", async (req, res) => {
+    res.send("Obtener todos los Metodos de Pago");
+});
+
+export default metodosPagoRouter;

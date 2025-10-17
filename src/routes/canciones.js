@@ -1,7 +1,11 @@
-/**
- * Rutas para canciones
- * Los estudiantes deben implementar todas las rutas relacionadas con canciones
- */
+import { Router } from "express";
+import Cancion from "../models/Cancion.js";
 
-const express = require("express");
-const router = express.Router();
+const cancionesRouter = Router();
+
+// Funcion para buscar todos los Canciones.
+cancionesRouter.get("/", async (req, res) => {
+    res.send("Obtener todos los Canciones");
+});
+
+export default cancionesRouter;

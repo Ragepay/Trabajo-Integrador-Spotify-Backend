@@ -1,10 +1,12 @@
-/**
- * Rutas para vistas con JOINs - EJERCICIOS ADICIONALES
- * Los estudiantes deben implementar estas rutas que utilizan vistas complejas con JOINs
- */
+import { Router } from "express";
+//import Vista from "../models/Vista.js";
 
-const express = require("express");
-const router = express.Router();
+const vistasRouter = Router();
+
+// Funcion para buscar todos los Vistas.
+vistasRouter.get("/", async (req, res) => {
+    res.send("Obtener todos los Vistas");
+});
 
 // TODO: Importar controlador de vistas
 // const vistasController = require('../controllers/vistasController');
@@ -21,4 +23,8 @@ const router = express.Router();
 // Incluir: nombre_artista, nombre_discografica, nombre_pais_discografica, total_ingresos, cantidad_suscripciones_activas
 // router.get('/ingresos-por-artista-discografica', vistasController.ingresosPorArtistaDiscografica);
 
-module.exports = router;
+
+export default vistasRouter;
+
+
+

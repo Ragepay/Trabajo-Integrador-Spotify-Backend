@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/database.js'; // ajustá la ruta a tu config real
+import { sequelize } from '../config/database.js';
 
 const Suscripcion = sequelize.define('Suscripcion', {
     id_tipo_usuario: {

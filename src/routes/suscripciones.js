@@ -1,7 +1,11 @@
-/**
- * Rutas para suscripciones
- * Los estudiantes deben implementar todas las rutas relacionadas con suscripciones
- */
+import { Router } from "express";
+import Suscripcion from "../models/Suscripcion.js";
 
-const express = require("express");
-const router = express.Router();
+const suscripcionesRouter = Router();
+
+// Funcion para buscar todos los Suscripciones.
+suscripcionesRouter.get("/", async (req, res) => {
+    res.send("Obtener todos los Suscripciones");
+});
+
+export default suscripcionesRouter;

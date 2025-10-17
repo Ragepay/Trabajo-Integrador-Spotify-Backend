@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/database.js'; // ajustá la ruta según tu estructura
+import { sequelize } from '../config/database.js';
 
 const Pago = sequelize.define('Pago', {
     id_pago: {
@@ -12,7 +12,7 @@ const Pago = sequelize.define('Pago', {
         allowNull: false
     },
     fecha_pago: {
-        type: DataTypes.DATEONLY, // se usa DATEONLY para 'date' en MySQL
+        type: DataTypes.DATEONLY,
         allowNull: false
     },
     importe: {

@@ -1,7 +1,11 @@
-/**
- * Rutas para géneros
- * Los estudiantes deben implementar todas las rutas relacionadas con géneros
- */
+import { Router } from "express";
+import Genero from "../models/Genero.js";
 
-const express = require("express");
-const router = express.Router();
+const generosRouter = Router();
+
+// Funcion para buscar todos los Generos.
+generosRouter.get("/", async (req, res) => {
+    res.send("Obtener todos los Generos");
+});
+
+export default generosRouter;

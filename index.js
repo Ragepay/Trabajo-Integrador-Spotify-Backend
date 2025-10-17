@@ -1,6 +1,6 @@
 import express from "express";
 import morgan from "morgan";
-import apiRouter from "./src/routes/api.router.js";
+import apiRouter from "./src/routes/indexApi.js";
 import errorHandler from "./src/middlewares/errorHandler.mid.js";
 import pathHandler from "./src/middlewares/pathHandler.mid.js";
 import { sequelize } from "./src/config/database.js";
@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true })); // Para leer el body de las pet
 app.use(morgan("dev")); // Logger para ver las peticiones en consola.
 
 // Rutas
-app.use("/api", apiRouter);
+app.use("/api/v1", apiRouter);
 
 // Middleware de manejo de errores.
 app.use(errorHandler);
@@ -37,7 +37,7 @@ async function ready() {
         await sequelize.sync();
         console.log("📦 Modelos sincronizados.");
         // Datos del Servidor.
-        console.log(`MODE: ${NODE_ENV} | PORT: ${PORT}\nhttp://localhost:${PORT}/api`);
+        console.log(`MODE: ${NODE_ENV} | PORT: ${PORT}\nhttp://localhost:${PORT}/api/v1`);
     } catch (error) {
         console.error("❌ Error al conectar con la base de datos:", error);
         process.exit(1);
