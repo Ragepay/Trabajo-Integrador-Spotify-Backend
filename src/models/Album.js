@@ -17,7 +17,8 @@ const Album = sequelize.define('Album', {
   },
   id_artista: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
   id_discografica: {
     type: DataTypes.INTEGER,
@@ -25,9 +26,13 @@ const Album = sequelize.define('Album', {
   }
 }, {
   tableName: 'album',
-  timestamps: false
+  timestamps: false,
+  indexes: [
+    {
+      unique: true,
+      fields: ['id_artista', 'titulo']
+    }
+  ]
 });
 
 export default Album;
-
-
