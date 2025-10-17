@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node index.js",
 		"dev": "node --watch index.js",
-		"push": "git add . && git commit -m \"5-feat: se creó el modelo de Usuario y Artista.\" && git push"
+		"push": "git add . && git commit -m \"5-feat: se creó el modelo de Album, Cancion y Genero. fix:Se corrigio el script de SQL.\" && git push"
 	},
 	"dependencies": {
 		"cors": "^2.8.5",

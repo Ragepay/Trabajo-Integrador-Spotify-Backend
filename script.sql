@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS spotify;
 USE spotify;
 
-## Borrar tabals si existen
+## Borrar tablas si existen
 
 DROP TABLE IF EXISTS Pagos;
 DROP TABLE IF EXISTS DatosPagoUsuario;
@@ -9,8 +9,8 @@ DROP TABLE IF EXISTS PlaylistCancion;
 DROP TABLE IF EXISTS Suscripcion;
 DROP TABLE IF EXISTS Playlist;
 DROP TABLE IF EXISTS Usuario;
-DROP TABLE IF EXISTS Tipo_Forma_Pago;
-DROP TABLE IF EXISTS Tipo_Usuario;
+DROP TABLE IF EXISTS TipoFormaPago;
+DROP TABLE IF EXISTS TipoUsuario;
 DROP TABLE IF EXISTS CancionGenero;
 DROP TABLE IF EXISTS Cancion;
 DROP TABLE IF EXISTS Album;
@@ -80,7 +80,7 @@ CREATE TABLE  CancionGenero (
 );
 
 -- Tabla para tipo_usuario
-CREATE TABLE  Tipo_Usuario (
+CREATE TABLE  TipoUsuario (
 id_tipo_usuario INT AUTO_INCREMENT PRIMARY KEY,
 nombre VARCHAR(100) NOT NULL UNIQUE 
 );
@@ -99,7 +99,7 @@ CREATE TABLE  Usuario (
     id_pais INT,
     tipo_usuario INT,
     FOREIGN KEY (id_pais) REFERENCES Pais(id_pais),
-    FOREIGN KEY (tipo_usuario) REFERENCES Tipo_Usuario(id_tipo_usuario)
+    FOREIGN KEY (tipo_usuario) REFERENCES TipoUsuario(id_tipo_usuario)
 );
 
 -- Tabla para Suscripciones
@@ -132,8 +132,8 @@ CREATE TABLE PlaylistCancion (
     FOREIGN KEY (id_cancion) REFERENCES Cancion(id_cancion)
 );
 
--- Tabla Tipo_Forma_Pago
-CREATE TABLE Tipo_Forma_Pago(
+-- Tabla TipoFormaPago
+CREATE TABLE TipoFormaPago(
 	id_tipo_forma_pago INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL UNIQUE
 );
@@ -147,7 +147,7 @@ CREATE TABLE DatosPagoUsuario (
     nro_tarjeta VARCHAR(50),
     mes_caduca INT,
     anio_caduca INT,
-    FOREIGN KEY (id_tipo_forma_pago) REFERENCES Tipo_Forma_Pago(id_tipo_forma_pago),
+    FOREIGN KEY (id_tipo_forma_pago) REFERENCES TipoFormaPago(id_tipo_forma_pago),
     FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
 );
 
@@ -171,12 +171,12 @@ SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE Pais;
 TRUNCATE TABLE Pagos;
 TRUNCATE TABLE DatosPagoUsuario;
-TRUNCATE TABLE Tipo_Forma_Pago;
+TRUNCATE TABLE TipoFormaPago;
 TRUNCATE TABLE PlaylistCancion;
 TRUNCATE TABLE Suscripcion;
 TRUNCATE TABLE Playlist;
 TRUNCATE TABLE Usuario;
-TRUNCATE TABLE Tipo_Usuario;
+TRUNCATE TABLE TipoUsuario;
 TRUNCATE TABLE CancionGenero;
 TRUNCATE TABLE Cancion;
 TRUNCATE TABLE Album;
@@ -284,7 +284,7 @@ INSERT INTO Genero (nombre) VALUES
 ('Rock'), ('Soul'), ('Pop'), ('Música Clasica'), ('Jazz'), ('Salsa'), ('Tango'), ('Hip Hop'), ('Techno');
 
 -- Tabla tipo_usuario
-INSERT INTO Tipo_Usuario (nombre) VALUES
+INSERT INTO TipoUsuario (nombre) VALUES
 ('Premium'), ('standard'), ('free');
 
 -- INSERTAR DATOS EN TABLAS CON DEPENDENCIAS
@@ -633,25 +633,25 @@ INSERT INTO CancionGenero (id_cancion, id_genero) VALUES
 
 -- Tabla Usuario (al menos 3 registros como pide la consigna) [26, 34-36]
 INSERT INTO Usuario (usuario, nombreCompleto, email, password, fecha_nacimiento, sexo, codigo_postal, id_pais, tipo_usuario) VALUES
-('MORTIZ', 'MARIA ORTIZ', 'mortiz@email.com', 'hashed_pass1', '1975-09-27', 'F', '1001', (SELECT id_pais FROM Pais WHERE nombre = 'Argentina'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Premium')),
-('IBALLESTEROS', 'ISABEL BALLESTEROS', 'iballesteros@email.com', 'hashed_pass2', '1987-10-17', 'F', '1001', (SELECT id_pais FROM Pais WHERE nombre = 'Argentina'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Premium')),
-('CRAMIREZ', 'CARMEN RAMIREZ', 'cramirez@email.com', 'hashed_pass3', '1994-08-26', 'F', '1001', (SELECT id_pais FROM Pais WHERE nombre = 'Argentina'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Premium')),
-('MGONZALEZ', 'MARIA PAULA GONZALEZ', 'mgonzalez@email.com', 'hashed_pass4', '1981-03-27', 'F', '118942', (SELECT id_pais FROM Pais WHERE nombre = 'Colombia'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Premium')),
-('EHERNANDEZ', 'EMILY HERNANDEZ', 'ehernandez@email.com', 'hashed_pass5', '2001-02-10', 'F', '118942', (SELECT id_pais FROM Pais WHERE nombre = 'Colombia'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Premium')),
-('LGOMEZ', 'LUISA GOMEZ', 'lgomez@email.com', 'hashed_pass6', '1971-12-12', 'F', '118942', (SELECT id_pais FROM Pais WHERE nombre = 'Colombia'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Standard')),
-('MSOSA', 'MARIA CARMEN SOSA', 'msosa@email.com', 'hashed_pass7', '1981-07-16', 'F', '3', (SELECT id_pais FROM Pais WHERE nombre = 'España'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Standard')),
-('MSMITH', 'MARY SMITH', 'msmith@email.com', 'hashed_pass8', '2000-05-04', 'F', 'B24', (SELECT id_pais FROM Pais WHERE nombre = 'Inglaterra'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Standard')),
-('PSOTO', 'PATRICIA SOTO', 'psoto@email.com', 'hashed_pass9', '1974-07-12', 'F', '8320000', (SELECT id_pais FROM Pais WHERE nombre = 'Chile'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Free')),
-('AGARCIA', 'ANTONIO GARCIA', 'agarcia@email.com', 'hashed_pass10', '1995-08-30', 'M', '1001', (SELECT id_pais FROM Pais WHERE nombre = 'Argentina'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Premium')),
-('JMARTINEZ', 'JOSE MARTINEZ', 'jmartinez@email.com', 'hashed_pass11', '1987-11-22', 'M', '1001', (SELECT id_pais FROM Pais WHERE nombre = 'Argentina'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Standard')),
-('FLOPEZ', 'FRANCISCO LOPEZ', 'flopez@email.com', 'hashed_pass12', '1988-02-16', 'M', '1001', (SELECT id_pais FROM Pais WHERE nombre = 'Argentina'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Free')),
-('JSANCHEZ', 'JUAN SANCHEZ', 'jsanchez@email.com', 'hashed_pass13', '2003-03-23', 'M', '1001', (SELECT id_pais FROM Pais WHERE nombre = 'Argentina'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Free')),
-('MRODRIGUEZ', 'MIGUEL ANGEL RODRIGUEZ', 'mrodriguez@email.com', 'hashed_pass14', '2003-10-16', 'M', '118942', (SELECT id_pais FROM Pais WHERE nombre = 'Colombia'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Standard')),
-('JDIAZ', 'JUAN ESTEBAN DIAZ', 'jdiaz@email.com', 'hashed_pass15', '1973-05-23', 'M', '118942', (SELECT id_pais FROM Pais WHERE nombre = 'Colombia'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Premium')),
-('JLOPEZ', 'JUAN SEBASTIAN LOPEZ', 'jlopez@email.com', 'hashed_pass16', '1974-03-15', 'M', '118942', (SELECT id_pais FROM Pais WHERE nombre = 'Colombia'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Standard')),
-('SMARTINEZ', 'SANTIAGO MARTINEZ', 'smartinez@email.com', 'hashed_pass17', '1977-07-18', 'M', '118942', (SELECT id_pais FROM Pais WHERE nombre = 'Colombia'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Standard')),
-('DRUBIO', 'DAVID RUBIO', 'drubio@email.com', 'hashed_pass18', '2001-01-17', 'M', '60000', (SELECT id_pais FROM Pais WHERE nombre = 'Uruguay'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Standard')),
-('JWATSON', 'JHON WATSON', 'jwatson@email.com', 'hashed_pass19', '2003-10-22', 'M', '10029', (SELECT id_pais FROM Pais WHERE nombre = 'Estados Unidos'), (SELECT id_tipo_usuario FROM Tipo_Usuario WHERE nombre = 'Free'));
+('MORTIZ', 'MARIA ORTIZ', 'mortiz@email.com', 'hashed_pass1', '1975-09-27', 'F', '1001', (SELECT id_pais FROM Pais WHERE nombre = 'Argentina'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Premium')),
+('IBALLESTEROS', 'ISABEL BALLESTEROS', 'iballesteros@email.com', 'hashed_pass2', '1987-10-17', 'F', '1001', (SELECT id_pais FROM Pais WHERE nombre = 'Argentina'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Premium')),
+('CRAMIREZ', 'CARMEN RAMIREZ', 'cramirez@email.com', 'hashed_pass3', '1994-08-26', 'F', '1001', (SELECT id_pais FROM Pais WHERE nombre = 'Argentina'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Premium')),
+('MGONZALEZ', 'MARIA PAULA GONZALEZ', 'mgonzalez@email.com', 'hashed_pass4', '1981-03-27', 'F', '118942', (SELECT id_pais FROM Pais WHERE nombre = 'Colombia'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Premium')),
+('EHERNANDEZ', 'EMILY HERNANDEZ', 'ehernandez@email.com', 'hashed_pass5', '2001-02-10', 'F', '118942', (SELECT id_pais FROM Pais WHERE nombre = 'Colombia'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Premium')),
+('LGOMEZ', 'LUISA GOMEZ', 'lgomez@email.com', 'hashed_pass6', '1971-12-12', 'F', '118942', (SELECT id_pais FROM Pais WHERE nombre = 'Colombia'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Standard')),
+('MSOSA', 'MARIA CARMEN SOSA', 'msosa@email.com', 'hashed_pass7', '1981-07-16', 'F', '3', (SELECT id_pais FROM Pais WHERE nombre = 'España'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Standard')),
+('MSMITH', 'MARY SMITH', 'msmith@email.com', 'hashed_pass8', '2000-05-04', 'F', 'B24', (SELECT id_pais FROM Pais WHERE nombre = 'Inglaterra'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Standard')),
+('PSOTO', 'PATRICIA SOTO', 'psoto@email.com', 'hashed_pass9', '1974-07-12', 'F', '8320000', (SELECT id_pais FROM Pais WHERE nombre = 'Chile'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Free')),
+('AGARCIA', 'ANTONIO GARCIA', 'agarcia@email.com', 'hashed_pass10', '1995-08-30', 'M', '1001', (SELECT id_pais FROM Pais WHERE nombre = 'Argentina'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Premium')),
+('JMARTINEZ', 'JOSE MARTINEZ', 'jmartinez@email.com', 'hashed_pass11', '1987-11-22', 'M', '1001', (SELECT id_pais FROM Pais WHERE nombre = 'Argentina'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Standard')),
+('FLOPEZ', 'FRANCISCO LOPEZ', 'flopez@email.com', 'hashed_pass12', '1988-02-16', 'M', '1001', (SELECT id_pais FROM Pais WHERE nombre = 'Argentina'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Free')),
+('JSANCHEZ', 'JUAN SANCHEZ', 'jsanchez@email.com', 'hashed_pass13', '2003-03-23', 'M', '1001', (SELECT id_pais FROM Pais WHERE nombre = 'Argentina'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Free')),
+('MRODRIGUEZ', 'MIGUEL ANGEL RODRIGUEZ', 'mrodriguez@email.com', 'hashed_pass14', '2003-10-16', 'M', '118942', (SELECT id_pais FROM Pais WHERE nombre = 'Colombia'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Standard')),
+('JDIAZ', 'JUAN ESTEBAN DIAZ', 'jdiaz@email.com', 'hashed_pass15', '1973-05-23', 'M', '118942', (SELECT id_pais FROM Pais WHERE nombre = 'Colombia'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Premium')),
+('JLOPEZ', 'JUAN SEBASTIAN LOPEZ', 'jlopez@email.com', 'hashed_pass16', '1974-03-15', 'M', '118942', (SELECT id_pais FROM Pais WHERE nombre = 'Colombia'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Standard')),
+('SMARTINEZ', 'SANTIAGO MARTINEZ', 'smartinez@email.com', 'hashed_pass17', '1977-07-18', 'M', '118942', (SELECT id_pais FROM Pais WHERE nombre = 'Colombia'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Standard')),
+('DRUBIO', 'DAVID RUBIO', 'drubio@email.com', 'hashed_pass18', '2001-01-17', 'M', '60000', (SELECT id_pais FROM Pais WHERE nombre = 'Uruguay'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Standard')),
+('JWATSON', 'JHON WATSON', 'jwatson@email.com', 'hashed_pass19', '2003-10-22', 'M', '10029', (SELECT id_pais FROM Pais WHERE nombre = 'Estados Unidos'), (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre = 'Free'));
 
 -- 3. INSERTAR DATOS EN TABLAS DE TRANSACCIONES Y RELACIONES COMPLEJAS
 
@@ -851,74 +851,74 @@ INSERT INTO Suscripcion (id_usuario, fecha_inicio, fecha_renovacion) VALUES
 ((SELECT id_usuario FROM Usuario WHERE usuario = 'SMARTINEZ'), '2021-03-01', '2021-05-01'),
 ((SELECT id_usuario FROM Usuario WHERE usuario = 'DRUBIO'), '2021-03-01', '2021-05-01');
 
--- Tabla Tipo_Forma_Pago
-INSERT INTO Tipo_Forma_Pago (nombre) VALUES 
+-- Tabla TipoFormaPago
+INSERT INTO TipoFormaPago (nombre) VALUES 
 ('Efectivo'),('Tarjeta de Debito'),('Tarjeta de credito'),('Debito Automatico x Banco');
 
 -- Tabla DatosPagoUsuario 
 INSERT INTO DatosPagoUsuario (id_usuario, id_tipo_forma_pago, cbu, nro_tarjeta, mes_caduca, anio_caduca) VALUES
 -- Datos del usuario MORTIZ
-((SELECT id_usuario FROM Usuario WHERE usuario = 'MORTIZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Efectivo'), NULL, NULL, NULL, NULL),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'MORTIZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 1881', 1, 21),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'MORTIZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Efectivo'), NULL, NULL, NULL, NULL),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'MORTIZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 1881', 1, 21),
 -- Datos del usuario IBALLESTEROS
-((SELECT id_usuario FROM Usuario WHERE usuario = 'IBALLESTEROS'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 8181', 10, 30),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'IBALLESTEROS'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Debito Automatico x Banco'), '******************1117', NULL, 10, 31),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'IBALLESTEROS'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 8181', 10, 30),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'IBALLESTEROS'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Debito Automatico x Banco'), '******************1117', NULL, 10, 31),
 -- Datos del usuario CRAMIREZ
-((SELECT id_usuario FROM Usuario WHERE usuario = 'CRAMIREZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 0087', 10, 28),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'CRAMIREZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 0000', 12, 21),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'CRAMIREZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 1117', 10, 31),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'CRAMIREZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 0087', 10, 28),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'CRAMIREZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 0000', 12, 21),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'CRAMIREZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 1117', 10, 31),
 -- Datos del usuario MGONZALEZ
-((SELECT id_usuario FROM Usuario WHERE usuario = 'MGONZALEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Efectivo'), NULL, NULL, NULL, NULL),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'MGONZALEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 6300', 1, 21),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'MGONZALEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Efectivo'), NULL, NULL, NULL, NULL),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'MGONZALEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 6300', 1, 21),
 -- Datos del usuario EHERNANDEZ
-((SELECT id_usuario FROM Usuario WHERE usuario = 'EHERNANDEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Debito Automatico x Banco'), '******************3748', NULL, NULL, NULL),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'EHERNANDEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 5824', 11, 21),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'EHERNANDEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 4654', 11, 21),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'EHERNANDEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Debito Automatico x Banco'), '******************3748', NULL, NULL, NULL),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'EHERNANDEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 5824', 11, 21),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'EHERNANDEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 4654', 11, 21),
 -- Datos del usuario LGOMEZ
-((SELECT id_usuario FROM Usuario WHERE usuario = 'LGOMEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Debito Automatico x Banco'), '******************2854', NULL, NULL, NULL),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'LGOMEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 6545', 10, 22),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'LGOMEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Debito Automatico x Banco'), '******************2854', NULL, NULL, NULL),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'LGOMEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 6545', 10, 22),
 -- Datos del usuario MSOSA
-((SELECT id_usuario FROM Usuario WHERE usuario = 'MSOSA'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Efectivo'), NULL, NULL, NULL, NULL),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'MSOSA'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Debito Automatico x Banco'), '******************4454', NULL, 12, 21),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'MSOSA'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 5454', 10, 23),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'MSOSA'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Efectivo'), NULL, NULL, NULL, NULL),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'MSOSA'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Debito Automatico x Banco'), '******************4454', NULL, 12, 21),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'MSOSA'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 5454', 10, 23),
 -- Datos del usuario MSMITH
-((SELECT id_usuario FROM Usuario WHERE usuario = 'MSMITH'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 8431', 8, 24),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'MSMITH'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 4654', 10, 22),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'MSMITH'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 8431', 8, 24),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'MSMITH'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 4654', 10, 22),
 -- Datos del usuario PSOTO
-((SELECT id_usuario FROM Usuario WHERE usuario = 'PSOTO'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Efectivo'), NULL, NULL, NULL, NULL),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'PSOTO'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 8485', 5, 22),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'PSOTO'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Efectivo'), NULL, NULL, NULL, NULL),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'PSOTO'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 8485', 5, 22),
 -- Datos del usuario AGARCIA
-((SELECT id_usuario FROM Usuario WHERE usuario = 'AGARCIA'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Debito Automatico x Banco'), '******************0002', NULL, NULL, NULL),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'AGARCIA'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 5645', 10, 24),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'AGARCIA'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Debito Automatico x Banco'), '******************0002', NULL, NULL, NULL),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'AGARCIA'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 5645', 10, 24),
 -- Datos del usuario JMARTINEZ
-((SELECT id_usuario FROM Usuario WHERE usuario = 'JMARTINEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Efectivo'), NULL, NULL, NULL, NULL),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'JMARTINEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 6300', 1, 21),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'JMARTINEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 4654', 10, 22),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'JMARTINEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 6545', 10, 22),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'JMARTINEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Debito Automatico x Banco'), '******************9485', NULL, NULL, NULL),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'JMARTINEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Efectivo'), NULL, NULL, NULL, NULL),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'JMARTINEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 6300', 1, 21),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'JMARTINEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 4654', 10, 22),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'JMARTINEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 6545', 10, 22),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'JMARTINEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Debito Automatico x Banco'), '******************9485', NULL, NULL, NULL),
 -- Datos del usuario FLOPEZ
-((SELECT id_usuario FROM Usuario WHERE usuario = 'FLOPEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 3237', 12, 21),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'FLOPEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 3237', 12, 21),
 -- Datos del usuario JSANCHEZ
-((SELECT id_usuario FROM Usuario WHERE usuario = 'JSANCHEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 5904', 11, 25),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'JSANCHEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 5904', 11, 25),
 -- Datos del usuario MRODRIGUEZ
-((SELECT id_usuario FROM Usuario WHERE usuario = 'MRODRIGUEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Debito Automatico x Banco'), '******************2077', NULL, NULL, NULL),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'MRODRIGUEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Debito Automatico x Banco'), '******************2077', NULL, NULL, NULL),
 -- Datos del usuario JDIAZ
-((SELECT id_usuario FROM Usuario WHERE usuario = 'JDIAZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 8431', 5, 29),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'JDIAZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 7879', 11, 25),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'JDIAZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 8431', 5, 29),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'JDIAZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 7879', 11, 25),
 -- Datos del usuario JLOPEZ
-((SELECT id_usuario FROM Usuario WHERE usuario = 'JLOPEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 0005', 4, 20),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'JLOPEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Efectivo'), NULL, NULL, NULL, NULL),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'JLOPEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Debito Automatico x Banco'), '******************5478', NULL, NULL, NULL),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'JLOPEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 0005', 4, 20),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'JLOPEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Efectivo'), NULL, NULL, NULL, NULL),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'JLOPEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Debito Automatico x Banco'), '******************5478', NULL, NULL, NULL),
 -- Datos del usuario SMARTINEZ
-((SELECT id_usuario FROM Usuario WHERE usuario = 'SMARTINEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 0007', 2, 20),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'SMARTINEZ'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 5645', 10, 24),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'SMARTINEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 0007', 2, 20),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'SMARTINEZ'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 5645', 10, 24),
 -- Datos del usuario DRUBIO
-((SELECT id_usuario FROM Usuario WHERE usuario = 'DRUBIO'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 0009', 3, 30),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'DRUBIO'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Efectivo'), NULL, NULL, NULL, NULL),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'DRUBIO'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 7987', 11, 25),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'DRUBIO'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 0009', 3, 30),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'DRUBIO'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Efectivo'), NULL, NULL, NULL, NULL),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'DRUBIO'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de Debito'), NULL, '**** **** **** 7987', 11, 25),
 -- Datos del usuario JWATSON
-((SELECT id_usuario FROM Usuario WHERE usuario = 'JWATSON'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Debito Automatico x Banco'), '******************4096', NULL, NULL, NULL),
-((SELECT id_usuario FROM Usuario WHERE usuario = 'JWATSON'), (SELECT id_tipo_forma_pago FROM Tipo_Forma_Pago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 0000', 12, 21);
+((SELECT id_usuario FROM Usuario WHERE usuario = 'JWATSON'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Debito Automatico x Banco'), '******************4096', NULL, NULL, NULL),
+((SELECT id_usuario FROM Usuario WHERE usuario = 'JWATSON'), (SELECT id_tipo_forma_pago FROM TipoFormaPago WHERE nombre = 'Tarjeta de credito'), NULL, '**** **** **** 0000', 12, 21);
 
 
 
