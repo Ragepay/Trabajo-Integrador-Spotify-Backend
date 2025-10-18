@@ -1,4 +1,3 @@
-
 ### VARIABLES GLOBALES
 @baseUrl = http://localhost:9000/api/v1
 @json = application/json
@@ -28,7 +27,7 @@ Content-Type: {{json}}
 
 {
   "password": "Secr3t0!",
-  "fecha_nac": "1995-05-20"
+  "fecha_nacimiento": "1995-05-20"
 }
 
 ### Listar usuarios
@@ -42,8 +41,13 @@ PUT {{baseUrl}}/usuarios/1
 Content-Type: {{json}}
 
 {
+  //"usuario": "mortiz",
+  //"email":"mortiz@email.com",
   "password": "Nuev4Clave!"
 }
+
+### Eliminar usuario por ID
+DELETE {{baseUrl}}/usuarios/20
 
 ### Listar usuarios con password vencida (>90 días)
 GET {{baseUrl}}/usuarios/password-vencidas

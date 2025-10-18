@@ -1,6 +1,7 @@
 import { Router } from "express";
 import Usuario from "../models/Usuario.js";
 import { createHashUtil } from "../utils/hash.js";
+import { Op } from "sequelize";
 
 const usuariosRouter = Router();
 
@@ -29,6 +30,28 @@ usuariosRouter.get("/", async (req, res) => {
             limit,
             total,
             totalPages: Math.ceil(total / limit),
+            usuarios
+        });
+    } catch (error) {
+        console.error("Error al obtener los usuarios:", error);
+        return res.status(500).json({ error: "Error al obtener todos los usuarios." });
+    }
+});
+
+// Funcion para buscar todos los Usuarios con password vencidas.
+usuariosRouter.get("/password-vencidas", async (req, res) => {
+    try {
+        const usuarios = await Usuario.findAll({
+            where: {
+                fecha_modificacion_pass: {
+                    [Op.lt]: new Date(new Date() - 90 * 24 * 60 * 60 * 1000) // 90 días
+                }
+            }
+        });
+
+        // Respuesta paginada
+        res.status(200).json({
+            mensaje: "Usuarios encontrados correctamente.",
             usuarios
         });
     } catch (error) {
@@ -81,8 +104,8 @@ usuariosRouter.post("/", async (req, res) => {
         const hashedPassword = createHashUtil(password);
         // Crear el usuario
         const nuevoUsuario = await Usuario.create({
-            usuario: usuario.toUpperCase(),
-            nombreCompleto: nombreCompleto.toUpperCase(),
+            usuario,
+            nombreCompleto,
             email,
             password: hashedPassword,
             fecha_nacimiento: fecha_nacimiento || null,
@@ -102,8 +125,83 @@ usuariosRouter.post("/", async (req, res) => {
     }
 });
 
-// PUT
+// Funcion para actualizar un Usuario existente.
+usuariosRouter.put("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
 
-// DELETE
+        // Verificar si el Usuario existe
+        let existeUser = await Usuario.findByPk(id);
+        if (!existeUser) {
+            return res.status(404).json({ error: "Usuario no encontrado." });
+        }
+
+        // Verificar si el email ya existe
+        if (req.body.email) {
+            const existeEmail = await Usuario.findOne({ where: { email: req.body.email } });
+            if (existeEmail) {
+                return res.status(400).json({ error: "El email ya está registrado." });
+            }
+        }
+
+        // Verificar si el usuario ya existe
+        if (req.body.usuario) {
+            const existeUsuario = await Usuario.findOne({ where: { usuario: req.body.usuario } });
+            if (existeUsuario) {
+                return res.status(400).json({ error: "El nombre de usuario ya está registrado." });
+            }
+        }
+
+        // Hashear la contraseña si vino una nueva
+        if (req.body.password) {
+            req.body.password = createHashUtil(req.body.password);
+            req.body.fecha_modificacion_pass = new Date();
+        }
+
+        // Actualizar dinámicamente todos los campos enviados
+        Object.entries(req.body).forEach(([key, value]) => {
+            if (existeUser.dataValues.hasOwnProperty(key)) {
+                existeUser[key] = value;
+            }
+        });
+
+        // Guardar los cambios
+        await existeUser.save();
+
+        // Response exitosa.
+        res.status(200).json({
+            mensaje: "Usuario actualizado correctamente.",
+            usuario: existeUser
+        });
+    } catch (error) {
+        console.error("Error al actualizar el usuario:", error);
+        return res.status(500).json({ error: "Error al actualizar el usuario." });
+    }
+});
+
+// Funcion para eliminar un Usuario existente (Borrado logico).
+usuariosRouter.delete("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Verificar si el Usuario existe y está activo.
+        let existeUser = await Usuario.findByPk(id);
+        if (!existeUser || existeUser.activo === false) {
+            return res.status(404).json({ error: "Usuario no encontrado." });
+        }
+
+        // Borrado logico.
+        existeUser.activo = false;
+        // Guardar los cambios
+        await existeUser.save();
+        // Response exitosa.
+        res.status(200).json({
+            mensaje: "Usuario eliminado con Borrado Lógico correctamente."
+        });
+    } catch (error) {
+        console.error("Error al eliminar el usuario:", error);
+        return res.status(500).json({ error: "Error al eliminar el usuario." });
+    }
+});
 
 export default usuariosRouter;

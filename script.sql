@@ -86,7 +86,7 @@ nombre VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- Tabla para Usuarios
-CREATE TABLE  Usuario (
+CREATE TABLE Usuario (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
     usuario VARCHAR(50) NOT NULL UNIQUE,
     nombreCompleto VARCHAR(150) NOT NULL,
@@ -98,6 +98,7 @@ CREATE TABLE  Usuario (
     codigo_postal VARCHAR(20),
     id_pais INT,
     tipo_usuario INT,
+    activo TINYINT(1) NOT NULL DEFAULT 1,
     FOREIGN KEY (id_pais) REFERENCES Pais(id_pais),
     FOREIGN KEY (tipo_usuario) REFERENCES TipoUsuario(id_tipo_usuario)
 );

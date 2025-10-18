@@ -11,11 +11,25 @@ const Usuario = sequelize.define('Usuario', {
     usuario: {
         type: DataTypes.STRING(50),
         allowNull: false,
-        unique: true
+        unique: true,
+        set(value) {
+            if (typeof value === 'string') {
+                this.setDataValue('usuario', value.toUpperCase());
+            } else {
+                this.setDataValue('usuario', value);
+            }
+        }
     },
     nombreCompleto: {
         type: DataTypes.STRING(150),
-        allowNull: false
+        allowNull: false,
+        set(value) {
+            if (typeof value === 'string') {
+                this.setDataValue('nombreCompleto', value.toUpperCase());
+            } else {
+                this.setDataValue('nombreCompleto', value);
+            }
+        }
     },
     email: {
         type: DataTypes.STRING(100),
@@ -29,7 +43,8 @@ const Usuario = sequelize.define('Usuario', {
     },
     fecha_modificacion_pass: {
         type: DataTypes.DATE,
-        allowNull: true
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     },
     fecha_nacimiento: {
         type: DataTypes.DATEONLY,
@@ -52,7 +67,11 @@ const Usuario = sequelize.define('Usuario', {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 1
-    }
+    },
+    activo: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+}
 }, {
     tableName: 'usuario',
     timestamps: false
