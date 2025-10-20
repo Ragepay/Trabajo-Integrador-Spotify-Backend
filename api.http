@@ -68,6 +68,9 @@ Content-Type: {{json}}
 ### Listar artistas
 GET {{baseUrl}}/artistas
 
+### Traer artista por ID
+GET {{baseUrl}}/artistas/3
+
 
 ### ==========================
 ### ÁLBUMES

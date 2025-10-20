@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node index.js",
 		"dev": "node --watch index.js",
-		"push": "git add . && git commit -m \"10-feat: creacion controlador de usuarios\" && git push"
+		"push": "git add . && git commit -m \"11-feat: creacion endpoints de Artista y controladores.\" && git push"
 	},
 	"dependencies": {
 		"bcrypt": "^6.0.0",
