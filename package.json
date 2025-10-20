@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node index.js",
 		"dev": "node --watch index.js",
-		"push": "git add . && git commit -m \"9-feat: endpoint y controlador de Usuarios(PUT, DELETE y GET-password). fix: Usuario(model) y script.sql\" && git push"
+		"push": "git add . && git commit -m \"10-feat: creacion controlador de usuarios\" && git push"
 	},
 	"dependencies": {
 		"bcrypt": "^6.0.0",
