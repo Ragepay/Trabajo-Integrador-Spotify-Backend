@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node index.js",
 		"dev": "node --watch index.js",
-		"push": "git add . && git commit -m \"13-feat: creacion de los endpoints de Canciones y sus controladores.\" && git push"
+		"push": "git add . && git commit -m \"14-feat: creacion de los endpoints de Generos y sus controladores.\" && git push"
 	},
 	"dependencies": {
 		"bcrypt": "^6.0.0",

@@ -177,6 +177,17 @@ Content-Type: {{json}}
 DELETE {{baseUrl}}/canciones/1/generos/3
 
 
+
+
+
+
+
+
+
+
+
+
+
 ### ==========================
 ### GÉNEROS
 ### ==========================
@@ -185,11 +196,21 @@ POST {{baseUrl}}/generos
 Content-Type: {{json}}
 
 {
-  "nombre": "Pop"
+  "nombre": "Cumbia 420 "
+ 
 }
 
 ### Listar géneros
 GET {{baseUrl}}/generos
+
+
+
+
+
+
+
+
+
 
 
 ### ==========================
