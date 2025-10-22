@@ -1,11 +1,24 @@
 import { Router } from "express";
-import { Cancion } from "../models/index.js";
+import { getCancionesByFilters, getCancionById, createCancion, updateCancion, associateGeneroToCancion, disassociateGeneroFromCancion } from "../controllers/cancionesController.js";
 
 const cancionesRouter = Router();
 
-// Funcion para buscar todos los Canciones.
-cancionesRouter.get("/", async (req, res) => {
-    res.send("Obtener todos los Canciones");
-});
+// Función para buscar canciones con filtros opcionales
+cancionesRouter.get("/", getCancionesByFilters);
+
+// Función para buscar una canción por ID con detalles
+cancionesRouter.get("/:id", getCancionById);
+
+// Crear una nueva canción
+cancionesRouter.post("/", createCancion);
+
+// Actualizar una canción existente
+cancionesRouter.put("/:id", updateCancion);
+
+// Asociar un género a una canción
+cancionesRouter.post("/:id/generos", associateGeneroToCancion);
+
+// Desasociar un género de una canción
+cancionesRouter.delete("/:id/generos/:idGenero", disassociateGeneroFromCancion);
 
 export default cancionesRouter;

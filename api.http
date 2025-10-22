@@ -144,12 +144,26 @@ Content-Type: {{json}}
 
 {
   "titulo": "DuracionMala",
-  "duracion_seg": 3.25,
+  "duracion": 3.25,
   "id_album": 1
 }
 
+### Actualizar canción 
+PUT {{baseUrl}}/canciones/5
+Content-Type: {{json}}
+
+{
+  "titulo": "DuracionMala",
+  "duracion": 201,
+  "id_album": 2,
+  "reproducciones": 1003478542231351231
+}
+
 ### Listar canciones (filtros)
-GET {{baseUrl}}/canciones?genero=Pop&albumId=1
+GET {{baseUrl}}/canciones?artistaId=10
+
+### Listar canciones por id
+GET {{baseUrl}}/canciones/1
 
 ### Asociar género a canción
 POST {{baseUrl}}/canciones/1/generos
