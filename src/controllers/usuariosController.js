@@ -1,6 +1,7 @@
-import Usuario from "../models/Usuario.js";
+import { Usuario } from "../models/index.js";
 import { createHashUtil } from "../utils/hash.js";
 import { Op } from "sequelize";
+
 
 // Funcion para buscar todos los Usuarios.
 const getAllUsuarios = async (req, res) => {
@@ -45,6 +46,11 @@ const getAllUsuariosConPasswordVencida = async (req, res) => {
             }
         });
 
+        // Verificar si se encontraron usuarios
+        if (usuarios.length === 0) {
+            return res.status(404).json({ mensaje: "No se encontraron usuarios con contraseña vencida." });
+        }
+
         // Respuesta paginada
         res.status(200).json({
             mensaje: "Usuarios encontrados correctamente.",
@@ -60,14 +66,18 @@ const getUsuarioById = async (req, res) => {
     try {
         // Se obtiene el id del Usuario desde los parametros de la URL.
         const { id } = req.params;
+
         // Se busca el Usuario por su ID en la base de datos.
         const usuario = await Usuario.findByPk(id);
+
         // Si no se encuentra el Usuario, se devuelve un error 404.
         if (!usuario) {
             return res.status(404).json({ error: "Usuario no encontrado" });
         }
+
         // Mensaje y respuesta exitosa.
         const mensaje = "Usuario encontrado correctamente.";
+
         // Response.
         res.status(200).json({ mensaje, usuario });
     } catch (error) {
@@ -80,22 +90,27 @@ const createUsuario = async (req, res) => {
     try {
         // Se obtienen los datos del nuevo Usuario desde el cuerpo de la solicitud.
         const { usuario, nombreCompleto, email, password, fecha_nacimiento, sexo, codigo_postal, id_pais, tipo_usuario } = req.body;
+
         // Validación básica de campos obligatorios
         if (!usuario || !nombreCompleto || !email || !password) {
             return res.status(400).json({ error: "usuario, nombreCompleto, email y password son requeridos." });
         }
+
         // Verificar si el email ya existe
         const existeEmail = await Usuario.findOne({ where: { email } });
         if (existeEmail) {
             return res.status(400).json({ error: "El email ya está registrado." });
         }
+
         // Verificar si el usuario ya existe
         const existeUsuario = await Usuario.findOne({ where: { usuario } });
         if (existeUsuario) {
             return res.status(400).json({ error: "El nombre de usuario ya está registrado." });
         }
+
         // Hashear la contraseña
         const hashedPassword = createHashUtil(password);
+
         // Crear el usuario
         const nuevoUsuario = await Usuario.create({
             usuario,
@@ -108,6 +123,7 @@ const createUsuario = async (req, res) => {
             id_pais: id_pais || null,
             tipo_usuario: tipo_usuario || 1
         });
+
         // Response exitosa.
         res.status(201).json({
             mensaje: "Usuario creado correctamente.",
@@ -121,6 +137,7 @@ const createUsuario = async (req, res) => {
 // Funcion para actualizar un Usuario existente.
 const updateUsuario = async (req, res) => {
     try {
+        // Se obtiene el id del Usuario desde los parametros de la URL.
         const { id } = req.params;
 
         // Verificar si el Usuario existe
@@ -174,6 +191,7 @@ const updateUsuario = async (req, res) => {
 // Funcion para eliminar un Usuario existente (Borrado logico).
 const deleteUsuario = async (req, res) => {
     try {
+        // Se obtiene el id del Usuario desde los parametros de la URL.
         const { id } = req.params;
 
         // Verificar si el Usuario existe y está activo.
@@ -184,8 +202,10 @@ const deleteUsuario = async (req, res) => {
 
         // Borrado logico.
         existeUser.activo = false;
+
         // Guardar los cambios
         await existeUser.save();
+        
         // Response exitosa.
         res.status(200).json({
             mensaje: "Usuario eliminado con Borrado Lógico correctamente."
@@ -195,5 +215,6 @@ const deleteUsuario = async (req, res) => {
         return res.status(500).json({ error: "Error al eliminar el usuario." });
     }
 };
+
 
 export { getAllUsuarios, getAllUsuariosConPasswordVencida, getUsuarioById, createUsuario, updateUsuario, deleteUsuario };

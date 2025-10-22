@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
 
+
 const MetodoPago = sequelize.define('MetodoPago', {
   id_datos_pago: {
     type: DataTypes.INTEGER,
@@ -47,5 +48,6 @@ const MetodoPago = sequelize.define('MetodoPago', {
     }
   }
 });
+
 
 export default MetodoPago;

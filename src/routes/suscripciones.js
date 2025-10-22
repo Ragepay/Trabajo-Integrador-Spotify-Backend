@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Suscripcion from "../models/Suscripcion.js";
+import { TipoUsuario } from "../models/index.js";
 
 const suscripcionesRouter = Router();
 

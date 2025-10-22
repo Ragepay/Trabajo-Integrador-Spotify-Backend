@@ -2,32 +2,28 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
 
 
-const Pago = sequelize.define('Pago', {
-    id_pago: {
+const SuscripcionReal = sequelize.define('SuscripcionReal', {
+    id_suscripcion: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    id_suscripcion: {
+    id_usuario: {
         type: DataTypes.INTEGER,
-        allowNull: true
+        allowNull: false
     },
-    fecha_pago: {
+    fecha_inicio: {
         type: DataTypes.DATEONLY,
         allowNull: false
     },
-    importe: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false
-    },
-    id_datos_pago: {
-        type: DataTypes.INTEGER,
+    fecha_renovacion: {
+        type: DataTypes.DATEONLY,
         allowNull: false
     }
 }, {
-    tableName: 'pagos',
+    tableName: 'suscripcion',
     timestamps: false
 });
 
 
-export default Pago;
+export default SuscripcionReal;

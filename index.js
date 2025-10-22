@@ -5,6 +5,7 @@ import errorHandler from "./src/middlewares/errorHandler.mid.js";
 import pathHandler from "./src/middlewares/pathHandler.mid.js";
 import { sequelize } from "./src/config/database.js";
 
+
 // Importar dotenv para leer variables de entorno.
 process.loadEnvFile();
 // Configuracion de variables de entorno.

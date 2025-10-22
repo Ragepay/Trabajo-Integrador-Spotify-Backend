@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
 
+
 const Artista = sequelize.define('Artista', {
     id_artista: {
         type: DataTypes.INTEGER,
@@ -10,8 +11,7 @@ const Artista = sequelize.define('Artista', {
     },
     nombre: {
         type: DataTypes.STRING(150),
-        allowNull: false,
-        unique: true
+        allowNull: false
     },
     imagen_url: {
         type: DataTypes.STRING(255),
@@ -24,5 +24,6 @@ const Artista = sequelize.define('Artista', {
     tableName: 'artista',
     timestamps: false
 });
+
 
 export default Artista;

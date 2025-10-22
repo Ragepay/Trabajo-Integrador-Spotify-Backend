@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
 
 
-const Suscripcion = sequelize.define('Suscripcion', {
+const TipoUsuario = sequelize.define('TipoUsuario', {
     id_tipo_usuario: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -19,4 +19,4 @@ const Suscripcion = sequelize.define('Suscripcion', {
 });
 
 
-export default Suscripcion;
+export default TipoUsuario;

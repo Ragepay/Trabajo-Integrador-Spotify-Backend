@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node index.js",
 		"dev": "node --watch index.js",
-		"push": "git add . && git commit -m \"11-feat: creacion endpoints de Artista y controladores.\" && git push"
+		"push": "git add . && git commit -m \"12-feat: creacion endpoints de Albumes y controladores. Agregacion de modelos CancionGenero, PlaylistCancion, Discografica ,TipoFormaPago, pais y suscripcion. Tambien creamos un archivo en models llamado \"index.js\" para las relaciones.\" && git push"
 	},
 	"dependencies": {
 		"bcrypt": "^6.0.0",

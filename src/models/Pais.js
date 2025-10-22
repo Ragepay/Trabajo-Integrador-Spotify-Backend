@@ -2,21 +2,21 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
 
 
-const Suscripcion = sequelize.define('Suscripcion', {
-    id_tipo_usuario: {
+const Pais = sequelize.define('Pais', {
+    id_pais: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
     nombre: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING(50),
         allowNull: false,
         unique: true
     }
 }, {
-    tableName: 'tipousuario',
+    tableName: 'pais',
     timestamps: false
 });
 
 
-export default Suscripcion;
+export default Pais;

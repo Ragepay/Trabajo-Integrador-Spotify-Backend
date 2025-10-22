@@ -2,32 +2,24 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
 
 
-const Pago = sequelize.define('Pago', {
-    id_pago: {
+const PlaylistCancion = sequelize.define('PlaylistCancion', {
+    id_playlist_cancion: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    id_suscripcion: {
+    id_playlist: {
         type: DataTypes.INTEGER,
-        allowNull: true
-    },
-    fecha_pago: {
-        type: DataTypes.DATEONLY,
         allowNull: false
     },
-    importe: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false
-    },
-    id_datos_pago: {
+    id_cancion: {
         type: DataTypes.INTEGER,
         allowNull: false
     }
 }, {
-    tableName: 'pagos',
+    tableName: 'playlistcancion',
     timestamps: false
 });
 
 
-export default Pago;
+export default PlaylistCancion;

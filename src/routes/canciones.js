@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Cancion from "../models/Cancion.js";
+import { Cancion } from "../models/index.js";
 
 const cancionesRouter = Router();
 

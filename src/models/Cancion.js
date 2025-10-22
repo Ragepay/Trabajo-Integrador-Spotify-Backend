@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
 
+
 const Cancion = sequelize.define('Cancion', {
   id_cancion: {
     type: DataTypes.INTEGER,
@@ -13,7 +14,7 @@ const Cancion = sequelize.define('Cancion', {
   },
   duracion: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true
   },
   reproducciones: {
     type: DataTypes.BIGINT,
@@ -27,12 +28,13 @@ const Cancion = sequelize.define('Cancion', {
   },
   id_album: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true
   }
 }, {
   tableName: 'cancion',
   timestamps: false
 });
+
 
 export default Cancion;
 

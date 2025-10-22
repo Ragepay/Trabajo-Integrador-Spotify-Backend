@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Pago from "../models/Pago.js";
+import { Pago } from "../models/index.js";
 
 const pagosRouter = Router();
 

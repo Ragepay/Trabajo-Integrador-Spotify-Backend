@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
 
+
 const Playlist = sequelize.define('Playlist', {
   id_playlist: {
     type: DataTypes.INTEGER,
@@ -48,5 +49,6 @@ const Playlist = sequelize.define('Playlist', {
     }
   }
 });
+
 
 export default Playlist;

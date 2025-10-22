@@ -2,6 +2,10 @@
 @baseUrl = http://localhost:9000/api/v1
 @json = application/json
 
+
+
+
+
 ### ==========================
 ### USUARIOS
 ### ==========================
@@ -53,6 +57,13 @@ DELETE {{baseUrl}}/usuarios/20
 GET {{baseUrl}}/usuarios/password-vencidas
 
 
+
+
+
+
+
+
+
 ### ==========================
 ### ARTISTAS
 ### ==========================
@@ -66,10 +77,20 @@ Content-Type: {{json}}
 }
 
 ### Listar artistas
-GET {{baseUrl}}/artistas
+GET {{baseUrl}}/artistas?page=3&limit=10
 
 ### Traer artista por ID
 GET {{baseUrl}}/artistas/3
+
+
+
+
+
+
+
+
+
+
 
 
 ### ==========================
@@ -87,10 +108,21 @@ Content-Type: {{json}}
 }
 
 ### Listar álbumes por artista
-GET {{baseUrl}}/albumes?artistaId=1
+GET {{baseUrl}}/albumes?artistaId=4
+
+### Listar un álbum por id
+GET {{baseUrl}}/albumes/23
 
 ### Canciones de un álbum
-GET {{baseUrl}}/albumes/1/canciones
+GET {{baseUrl}}/albumes/3/canciones
+
+
+
+
+
+
+
+
 
 
 ### ==========================

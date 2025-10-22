@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Genero from "../models/Genero.js";
+import { Genero } from "../models/index.js";
 
 const generosRouter = Router();
 

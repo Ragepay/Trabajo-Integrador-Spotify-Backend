@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
 
+
 const Usuario = sequelize.define('Usuario', {
     id_usuario: {
         type: DataTypes.INTEGER,
@@ -69,12 +70,13 @@ const Usuario = sequelize.define('Usuario', {
         defaultValue: 1
     },
     activo: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: true
-}
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+    }
 }, {
     tableName: 'usuario',
     timestamps: false
 });
+
 
 export default Usuario;

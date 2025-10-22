@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
 
+
 const Album = sequelize.define('Album', {
   id_album: {
     type: DataTypes.INTEGER,
@@ -17,8 +18,7 @@ const Album = sequelize.define('Album', {
   },
   id_artista: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    unique: true
+    allowNull: false
   },
   id_discografica: {
     type: DataTypes.INTEGER,
@@ -34,5 +34,6 @@ const Album = sequelize.define('Album', {
     }
   ]
 });
+
 
 export default Album;
