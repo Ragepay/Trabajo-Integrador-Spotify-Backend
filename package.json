@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node index.js",
 		"dev": "node --watch index.js",
-		"push": "git add . && git commit -m \"15-feat: creacion e implementacion de documentacion con swagger.\" && git push"
+		"push": "git add . && git commit -m \"16-feat: creacion de los endpoints de Suscripcion, metodosPago, pagos y sus respectivos controladores. doc: cambios en swagger.yaml\" && git push"
 	},
 	"dependencies": {
 		"bcrypt": "^6.0.0",

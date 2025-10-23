@@ -255,17 +255,34 @@ Content-Type: {{json}}
 }
 
 
+
+
+
+
+
+
+
+
+
 ### ==========================
 ### SUSCRIPCIONES
 ### ==========================
-# Crear suscripción (fecha_renovacion > fecha_inicio)
+### Listar suscripciones
+GET {{baseUrl}}/suscripciones
+
+
+### Listar suscripciones por id
+GET {{baseUrl}}/suscripciones/4
+
+
+### Crear suscripción (fecha_renovacion > fecha_inicio)
 POST {{baseUrl}}/suscripciones
 Content-Type: {{json}}
 
 {
   "id_usuario": 1,
   "id_tipo_usuario": 1,
-  "fecha_inicio": "2025-10-01T00:00:00Z",
+  "fecha_inicio": "2025-10-02T00:00:00Z",
   "fecha_renovacion": "2025-11-01T00:00:00Z"
 }
 
@@ -281,6 +298,9 @@ Content-Type: {{json}}
 }
 
 
+
+
+
 ### ==========================
 ### MÉTODOS DE PAGO
 ### ==========================
@@ -290,7 +310,7 @@ Content-Type: {{json}}
 
 {
   "id_usuario": 1,
-  "tipo_forma_pago": "Tarjeta de crédito",
+  "id_tipo_forma_pago": 3,
   "nro_tarjeta": "4519000000001234",
   "mes_caduca": 12,
   "anio_caduca": 2027,
@@ -301,6 +321,10 @@ Content-Type: {{json}}
 GET {{baseUrl}}/metodos-pago?usuarioId=1
 
 
+
+
+
+
 ### ==========================
 ### PAGOS
 ### ==========================
@@ -309,15 +333,22 @@ POST {{baseUrl}}/pagos
 Content-Type: {{json}}
 
 {
-  "id_usuario": 1,
   "id_suscripcion": 1,
-  "id_metodo_pago": 1,
-  "importe": 100,
-  "fecha_pago": "2025-10-01T00:00:00Z"
+  "id_datos_pago": 1,
+  "fecha_pago": "2025-10-01",
+  "importe": 100
 }
 
 ### Listar pagos por usuario y rango
-GET {{baseUrl}}/pagos?usuarioId=1&desde=2025-09-01&hasta=2025-12-31
+GET {{baseUrl}}/pagos?usuarioId=1&desde=2020-09-01&hasta=2025-12-31
+
+
+
+
+
+
+
+
 
 
 ### ==========================

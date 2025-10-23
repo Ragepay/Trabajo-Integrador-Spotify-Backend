@@ -571,20 +571,98 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/GenerosListResponse' }
         '500': { $ref: '#/components/responses/InternalServerError' }
+
+  # ==================== SUSCRIPCIONES ====================
+  /suscripciones:
+    get:
+      tags: [Suscripciones]
+      summary: Listar suscripciones
+      responses:
+        '200':
+          description: Suscripciones obtenidas
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuscripcionesListResponse' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
     post:
-      tags: [Géneros]
-      summary: Crear género
+      tags: [Suscripciones]
+      summary: Crear suscripción
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/GeneroCreate' }
+            schema: { $ref: '#/components/schemas/SuscripcionCreate' }
       responses:
-        '201':
-          description: Género creado
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/GeneroCreateResponse' }
+        '201': { description: Suscripción creada, content: { application/json: { schema: { $ref: '#/components/schemas/SuscripcionCreateResponse' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+  /suscripciones/{id}:
+    get:
+      tags: [Suscripciones]
+      summary: Obtener suscripción por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: Suscripción encontrada, content: { application/json: { schema: { $ref: '#/components/schemas/SuscripcionGetResponse' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
+  # ==================== MÉTODOS DE PAGO ====================
+  /metodos-pago:
+    get:
+      tags: [Métodos de Pago]
+      summary: Listar métodos de pago (opcional filtrar por usuarioId)
+      parameters:
+        - name: usuarioId
+          in: query
+          schema: { type: integer }
+      responses:
+        '200': { description: Métodos obtenidos, content: { application/json: { schema: { $ref: '#/components/schemas/MetodosPagoListResponse' } } } }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+    post:
+      tags: [Métodos de Pago]
+      summary: Crear método de pago
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MetodoPagoCreate' }
+      responses:
+        '201': { description: Método de pago creado, content: { application/json: { schema: { $ref: '#/components/schemas/MetodoPagoCreateResponse' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
+  # ==================== PAGOS ====================
+  /pagos:
+    get:
+      tags: [Pagos]
+      summary: Listar pagos con filtros opcionales
+      parameters:
+        - name: usuarioId
+          in: query
+          schema: { type: integer }
+        - name: desde
+          in: query
+          schema: { type: string, format: date }
+        - name: hasta
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        '200': { description: Pagos obtenidos, content: { application/json: { schema: { $ref: '#/components/schemas/PagosListResponse' } } } }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+    post:
+      tags: [Pagos]
+      summary: Registrar pago
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PagoCreate' }
+      responses:
+        '201': { description: Pago registrado, content: { application/json: { schema: { $ref: '#/components/schemas/PagoCreateResponse' } } } }
         '400': { $ref: '#/components/responses/BadRequest' }
         '500': { $ref: '#/components/responses/InternalServerError' }
 
@@ -889,24 +967,109 @@ components:
           example: 8
 
     Error:
+    SuscripcionResponse:
       type: object
       properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              example: VALIDATION_ERROR
-            message:
-              type: string
-              example: Datos de entrada inválidos
-            details:
-              oneOf:
-                - type: string
-                - type: array
-                  items:
-                    type: string
-              example: El email es obligatorio
+        id_suscripcion: { type: integer, example: 1 }
+        id_usuario: { type: integer, example: 5 }
+        fecha_inicio: { type: string, format: date, example: '2025-01-01' }
+        fecha_renovacion: { type: string, format: date, example: '2025-02-01' }
+
+    SuscripcionesListResponse:
+      type: object
+      properties:
+        mensaje: { type: string }
+        suscripciones:
+          type: array
+          items: { $ref: '#/components/schemas/SuscripcionResponse' }
+
+    SuscripcionCreate:
+      type: object
+      required: [id_usuario, fecha_inicio, fecha_renovacion]
+      properties:
+        id_usuario: { type: integer }
+        fecha_inicio: { type: string, format: date }
+        fecha_renovacion: { type: string, format: date }
+
+    SuscripcionCreateResponse:
+      type: object
+      properties:
+        mensaje: { type: string }
+        suscripcion: { $ref: '#/components/schemas/SuscripcionResponse' }
+
+    SuscripcionGetResponse:
+      type: object
+      properties:
+        mensaje: { type: string }
+        suscripcion: { $ref: '#/components/schemas/SuscripcionResponse' }
+
+    MetodoPagoResponse:
+      type: object
+      properties:
+        id_datos_pago: { type: integer, example: 10 }
+        id_usuario: { type: integer, example: 5 }
+        id_tipo_forma_pago: { type: integer, example: 2 }
+        cbu: { type: string, nullable: true }
+        nro_tarjeta: { type: string, example: '**** **** **** 1234', nullable: true }
+        mes_caduca: { type: integer, nullable: true }
+        anio_caduca: { type: integer, nullable: true }
+
+    MetodosPagoListResponse:
+      type: object
+      properties:
+        mensaje: { type: string }
+        metodos:
+          type: array
+          items: { $ref: '#/components/schemas/MetodoPagoResponse' }
+
+    MetodoPagoCreate:
+      type: object
+      required: [id_usuario, id_tipo_forma_pago]
+      properties:
+        id_usuario: { type: integer }
+        id_tipo_forma_pago: { type: integer }
+        nro_tarjeta: { type: string }
+        cbu: { type: string }
+        mes_caduca: { type: integer }
+        anio_caduca: { type: integer }
+
+    MetodoPagoCreateResponse:
+      type: object
+      properties:
+        mensaje: { type: string }
+        metodoPago: { $ref: '#/components/schemas/MetodoPagoResponse' }
+
+    PagoResponse:
+      type: object
+      properties:
+        id_pago: { type: integer, example: 100 }
+        id_suscripcion: { type: integer }
+        fecha_pago: { type: string, format: date }
+        importe: { type: number, format: decimal }
+        id_datos_pago: { type: integer }
+
+    PagosListResponse:
+      type: object
+      properties:
+        mensaje: { type: string }
+        pagos:
+          type: array
+          items: { $ref: '#/components/schemas/PagoResponse' }
+
+    PagoCreate:
+      type: object
+      required: [id_suscripcion, id_datos_pago, fecha_pago, importe]
+      properties:
+        id_suscripcion: { type: integer }
+        id_datos_pago: { type: integer }
+        fecha_pago: { type: string, format: date }
+        importe: { type: number, format: decimal }
+
+    PagoCreateResponse:
+      type: object
+      properties:
+        mensaje: { type: string }
+        pago: { $ref: '#/components/schemas/PagoResponse' }
 
   # ==================== RESPUESTAS REUTILIZABLES ====================
   responses:

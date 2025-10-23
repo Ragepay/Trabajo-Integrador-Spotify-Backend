@@ -1,11 +1,13 @@
 import { Router } from "express";
-import { TipoUsuario } from "../models/index.js";
+import { getSuscripciones, getSuscripcionById, createSuscripcion } from "../controllers/suscripcionesController.js";
 
 const suscripcionesRouter = Router();
 
 // Funcion para buscar todos los Suscripciones.
-suscripcionesRouter.get("/", async (req, res) => {
-    res.send("Obtener todos los Suscripciones");
-});
+suscripcionesRouter.get("/", getSuscripciones);
+// Funcion para buscar una suscripcion por ID.
+suscripcionesRouter.get("/:id", getSuscripcionById);
+// Funcion para crear una nueva Suscripcion.
+suscripcionesRouter.post("/", createSuscripcion);
 
 export default suscripcionesRouter;
