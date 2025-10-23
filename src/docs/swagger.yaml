@@ -666,6 +666,132 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '500': { $ref: '#/components/responses/InternalServerError' }
 
+  # ==================== PLAYLISTS ====================
+  /playlists:
+    get:
+      tags: [Playlists]
+      summary: Listar todas las playlists (filtro opcional por usuario)
+      parameters:
+        - name: usuarioId
+          in: query
+          description: ID del usuario para filtrar sus playlists
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Playlists obtenidas correctamente
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PlaylistsListResponse' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+    post:
+      tags: [Playlists]
+      summary: Crear nueva playlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PlaylistCreate' }
+      responses:
+        '201':
+          description: Playlist creada correctamente
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PlaylistCreateResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
+  /playlists/{id}:
+    get:
+      tags: [Playlists]
+      summary: Obtener una playlist por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Playlist encontrada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PlaylistGetResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+    put:
+      tags: [Playlists]
+      summary: Actualizar playlist (título o estado)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PlaylistUpdate' }
+      responses:
+        '200':
+          description: Playlist actualizada correctamente
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PlaylistUpdateResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
+  /playlists/{id}/canciones:
+    post:
+      tags: [Playlists]
+      summary: Agregar canción a playlist
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la playlist
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PlaylistAddCancion' }
+      responses:
+        '201':
+          description: Canción agregada correctamente
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PlaylistAddCancionResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
+  /playlists/{id}/canciones/{idCancion}:
+    delete:
+      tags: [Playlists]
+      summary: Quitar canción de playlist
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la playlist
+          schema: { type: integer }
+        - name: idCancion
+          in: path
+          required: true
+          description: ID de la canción a quitar
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Canción eliminada correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje: { type: string, example: Canción eliminada de la playlist correctamente. }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
 
 components:
   schemas:
@@ -1070,6 +1196,74 @@ components:
       properties:
         mensaje: { type: string }
         pago: { $ref: '#/components/schemas/PagoResponse' }
+
+    # ==================== PLAYLISTS ====================
+    PlaylistResponse:
+      type: object
+      properties:
+        id_playlist: { type: integer, example: 1 }
+        id_usuario: { type: integer, example: 5 }
+        titulo: { type: string, example: Para correr }
+        cant_canciones: { type: integer, example: 10 }
+        fecha_creacion: { type: string, format: date-time }
+        eliminada: { type: boolean, example: false }
+        fecha_eliminacion: { type: string, format: date-time, nullable: true }
+
+    PlaylistsListResponse:
+      type: object
+      properties:
+        mensaje: { type: string, example: Playlists obtenidas correctamente. }
+        playlists:
+          type: array
+          items: { $ref: '#/components/schemas/PlaylistResponse' }
+
+    PlaylistCreate:
+      type: object
+      required: [id_usuario, titulo]
+      properties:
+        id_usuario: { type: integer, example: 1 }
+        titulo: { type: string, example: Mi playlist favorita }
+
+    PlaylistCreateResponse:
+      type: object
+      properties:
+        mensaje: { type: string, example: Playlist creada correctamente. }
+        nuevaPlaylist: { $ref: '#/components/schemas/PlaylistResponse' }
+
+    PlaylistGetResponse:
+      type: object
+      properties:
+        mensaje: { type: string, example: Playlist encontrada. }
+        playlist: { $ref: '#/components/schemas/PlaylistResponse' }
+
+    PlaylistUpdate:
+      type: object
+      properties:
+        titulo: { type: string, example: Nuevo título }
+        estado: { type: string, enum: [activa, eliminada], example: eliminada }
+        fecha_eliminada: { type: string, format: date-time, example: '2025-10-02T10:00:00Z' }
+
+    PlaylistUpdateResponse:
+      type: object
+      properties:
+        mensaje: { type: string, example: Playlist actualizada correctamente. }
+        playlist: { $ref: '#/components/schemas/PlaylistResponse' }
+
+    PlaylistAddCancion:
+      type: object
+      required: [id_cancion]
+      properties:
+        id_cancion: { type: integer, example: 5 }
+
+    PlaylistAddCancionResponse:
+      type: object
+      properties:
+        mensaje: { type: string, example: Canción agregada a la playlist correctamente. }
+        data:
+          type: object
+          properties:
+            id_playlist: { type: integer, example: 1 }
+            id_cancion: { type: integer, example: 5 }
 
   # ==================== RESPUESTAS REUTILIZABLES ====================
   responses:

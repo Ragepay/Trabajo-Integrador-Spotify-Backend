@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node index.js",
 		"dev": "node --watch index.js",
-		"push": "git add . && git commit -m \"17-feat: creacion de los endpoints de Playlist y sus controladores. Y script sql de vistas.\" && git push"
+		"push": "git add . && git commit -m \"18-doc: actualizacion de la documentacion de la API en swagger.yaml\" && git push"
 	},
 	"dependencies": {
 		"bcrypt": "^6.0.0",
