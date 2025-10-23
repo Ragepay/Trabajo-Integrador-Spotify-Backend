@@ -88,6 +88,16 @@ paths:
                       $ref: '#/components/schemas/UsuarioResponse'
                   pagination:
                     $ref: '#/components/schemas/Pagination'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error al obtener todos los usuarios."
     
     post:
       tags: [Usuarios]
@@ -105,11 +115,39 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UsuarioResponse'
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    example: "Usuario creado correctamente."
+                  usuario:
+                    $ref: '#/components/schemas/UsuarioResponse'
         '400':
-          $ref: '#/components/responses/BadRequest'
-        '409':
-          $ref: '#/components/responses/Conflict'
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    examples:
+                      campos_requeridos:
+                        value: "usuario, nombreCompleto, email y password son requeridos."
+                      email_duplicado:
+                        value: "El email ya está registrado."
+                      usuario_duplicado:
+                        value: "El nombre de usuario ya está registrado."
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error al crear el usuario."
 
   /usuarios/{id}:
     get:
@@ -127,9 +165,33 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UsuarioResponse'
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    example: "Usuario encontrado correctamente."
+                  usuario:
+                    $ref: '#/components/schemas/UsuarioResponse'
         '404':
-          $ref: '#/components/responses/NotFound'
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Usuario no encontrado"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error al obtener el usuario."
     put:
       tags: [Usuarios]
       summary: Actualizar usuario
@@ -149,9 +211,40 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/UsuarioUpdateResponse' }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '404': { $ref: '#/components/responses/NotFound' }
-        '500': { $ref: '#/components/responses/InternalServerError' }
+        '400':
+          description: Error de validación 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    examples:
+                      email_duplicado:
+                        value: "El email ya está registrado."
+                      usuario_duplicado:
+                        value: "El nombre de usuario ya está registrado."
+        '404':
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Usuario no encontrado."
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error al actualizar el usuario."
     delete:
       tags: [Usuarios]
       summary: Eliminación lógica de usuario
@@ -166,8 +259,26 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/UsuarioDeletedResponse' }
-        '404': { $ref: '#/components/responses/NotFound' }
-        '500': { $ref: '#/components/responses/InternalServerError' }
+        '404':
+          description: Usuario no encontrado o ya eliminado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Usuario no encontrado."
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error al eliminar el usuario."
 
   /usuarios/password-vencidas:
     get:
@@ -180,9 +291,35 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsuarioResponse'
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    example: "Usuarios encontrados correctamente."
+                  usuarios:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UsuarioResponse'
+        '404':
+          description: No se encontraron usuarios con contraseña vencida
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    example: "No se encontraron usuarios con contraseña vencida."
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error al obtener todos los usuarios."
 
   # ==================== VISTAS AVANZADAS (EJERCICIOS) ====================
   /vistas/canciones-populares-por-pais:
@@ -224,11 +361,25 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CancionPopularPorPais'
-        '400':
-          $ref: '#/components/responses/BadRequest'
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    example: "Canciones populares por país obtenidas exitosamente"
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CancionPopularPorPais'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error al obtener canciones populares por país"
 
   /vistas/ingresos-por-artista-discografica:
     get:
@@ -280,14 +431,23 @@ paths:
               schema:
                 type: object
                 properties:
-                  data:
+                  mensaje:
+                    type: string
+                    example: "Ingresos por artista y discográfica obtenidos exitosamente"
+                  results:
                     type: array
                     items:
                       $ref: '#/components/schemas/IngresoPorArtistaDiscografica'
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-        '400':
-          $ref: '#/components/responses/BadRequest'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error al obtener ingresos por artista y discográfica."
 
   # ==================== ARTISTAS ====================
   /artistas:
@@ -453,8 +613,34 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/CancionesListResponse' }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '404': { $ref: '#/components/responses/NotFound' }
+        '400':
+          description: Error de validación en filtros
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Solo puede usar un filtro a la vez: genero, artistaId o albumId."
+        '404':
+          description: No se encontraron canciones con los filtros especificados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    examples:
+                      sin_canciones:
+                        value: "No se encontraron canciones con el filtro aplicado."
+                      genero_no_existe:
+                        value: "El género especificado no existe."
+                      artista_no_existe:
+                        value: "El artista especificado no existe."
+                      album_no_existe:
+                        value: "El álbum especificado no existe."
         '500': { $ref: '#/components/responses/InternalServerError' }
     post:
       tags: [Canciones]
@@ -470,7 +656,24 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/CancionCreateResponse' }
-        '400': { $ref: '#/components/responses/BadRequest' }
+        '400':
+          description: Error de validación en datos de entrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    examples:
+                      titulo_requerido:
+                        value: "El título es requerido."
+                      duracion_invalida:
+                        value: "La duración debe ser un entero mayor a 0."
+                      album_no_existe:
+                        value: "El álbum especificado no existe."
+                      cancion_duplicada:
+                        value: "Ya existe una canción con el mismo título en el álbum especificado."
         '500': { $ref: '#/components/responses/InternalServerError' }
 
   /canciones/{id}:
@@ -594,7 +797,26 @@ paths:
             schema: { $ref: '#/components/schemas/SuscripcionCreate' }
       responses:
         '201': { description: Suscripción creada, content: { application/json: { schema: { $ref: '#/components/schemas/SuscripcionCreateResponse' } } } }
-        '400': { $ref: '#/components/responses/BadRequest' }
+        '400':
+          description: Error de validación en datos de entrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    examples:
+                      campos_requeridos:
+                        value: "id_usuario, fecha_inicio y fecha_renovacion son requeridos."
+                      formato_fecha_invalido:
+                        value: "Formato de fecha inválido."
+                      fecha_renovacion_invalida:
+                        value: "fecha_renovacion debe ser posterior a fecha_inicio."
+                      usuario_no_existe:
+                        value: "El usuario especificado no existe."
+                      suscripcion_duplicada:
+                        value: "Ya existe una suscripción para ese usuario con esa fecha_inicio."
         '500': { $ref: '#/components/responses/InternalServerError' }
   /suscripciones/{id}:
     get:
@@ -607,7 +829,16 @@ paths:
           schema: { type: integer }
       responses:
         '200': { description: Suscripción encontrada, content: { application/json: { schema: { $ref: '#/components/schemas/SuscripcionGetResponse' } } } }
-        '404': { $ref: '#/components/responses/NotFound' }
+        '404':
+          description: Suscripción no encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Suscripción no encontrada."
         '500': { $ref: '#/components/responses/InternalServerError' }
 
   # ==================== MÉTODOS DE PAGO ====================
@@ -697,7 +928,20 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/PlaylistCreateResponse' }
-        '400': { $ref: '#/components/responses/BadRequest' }
+        '400':
+          description: Error de validación en datos de entrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    examples:
+                      campos_requeridos:
+                        value: "id_usuario y titulo son requeridos."
+                      usuario_no_existe:
+                        value: "Usuario no encontrado."
         '500': { $ref: '#/components/responses/InternalServerError' }
 
   /playlists/{id}:
@@ -715,7 +959,16 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/PlaylistGetResponse' }
-        '404': { $ref: '#/components/responses/NotFound' }
+        '404':
+          description: Playlist no encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Playlist no encontrada."
         '500': { $ref: '#/components/responses/InternalServerError' }
     put:
       tags: [Playlists]
@@ -736,8 +989,30 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/PlaylistUpdateResponse' }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '404': { $ref: '#/components/responses/NotFound' }
+        '400':
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    examples:
+                      estado_invalido:
+                        value: "El estado solo puede ser 'activa' o 'eliminada'."
+                      titulo_invalido:
+                        value: "El título no puede estar vacío."
+        '404':
+          description: Playlist no encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Playlist no encontrada."
         '500': { $ref: '#/components/responses/InternalServerError' }
 
   /playlists/{id}/canciones:
@@ -761,8 +1036,32 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/PlaylistAddCancionResponse' }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '404': { $ref: '#/components/responses/NotFound' }
+        '400':
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    examples:
+                      id_cancion_requerido:
+                        value: "id_cancion es requerido."
+                      cancion_no_encontrada:
+                        value: "Canción no encontrada."
+                      cancion_ya_en_playlist:
+                        value: "La canción ya está en la playlist."
+        '404':
+          description: Playlist no encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Playlist no encontrada."
         '500': { $ref: '#/components/responses/InternalServerError' }
 
   /playlists/{id}/canciones/{idCancion}:
@@ -789,7 +1088,22 @@ paths:
                 type: object
                 properties:
                   mensaje: { type: string, example: Canción eliminada de la playlist correctamente. }
-        '404': { $ref: '#/components/responses/NotFound' }
+        '404':
+          description: Recurso no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    examples:
+                      playlist_no_encontrada:
+                        value: "Playlist no encontrada."
+                      cancion_no_encontrada:
+                        value: "Canción no encontrada."
+                      cancion_no_en_playlist:
+                        value: "La canción no está en la playlist."
         '500': { $ref: '#/components/responses/InternalServerError' }
 
 
