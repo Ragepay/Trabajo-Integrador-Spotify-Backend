@@ -28,10 +28,8 @@ info:
     url: https://opensource.org/licenses/MIT
 
 servers:
-  - url: http://localhost:3000/api/v1
-    description: Servidor de desarrollo local
-  - url: https://api.spotify-backend.com/v1
-    description: Servidor de producción (ejemplo)
+  - url: http://localhost:9000/api/v1
+    description: Servidor de desarrollo local (selecciona este en Swagger UI)
 
 tags:
   - name: Usuarios
@@ -132,6 +130,44 @@ paths:
                 $ref: '#/components/schemas/UsuarioResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Usuarios]
+      summary: Actualizar usuario
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UsuarioUpdate' }
+      responses:
+        '200':
+          description: Usuario actualizado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UsuarioUpdateResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+    delete:
+      tags: [Usuarios]
+      summary: Eliminación lógica de usuario
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Usuario eliminado (borrado lógico)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UsuarioDeletedResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
 
   /usuarios/password-vencidas:
     get:
@@ -253,82 +289,529 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
+  # ==================== ARTISTAS ====================
+  /artistas:
+    get:
+      tags: [Artistas]
+      summary: Listar artistas
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 1, minimum: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20, minimum: 1, maximum: 100 }
+      responses:
+        '200':
+          description: Artistas encontrados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje: { type: string }
+                  page: { type: integer }
+                  limit: { type: integer }
+                  total: { type: integer }
+                  totalPages: { type: integer }
+                  artistas:
+                    type: array
+                    items: { $ref: '#/components/schemas/ArtistaResponse' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+    post:
+      tags: [Artistas]
+      summary: Crear artista
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ArtistaCreate' }
+      responses:
+        '201':
+          description: Artista creado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ArtistaCreateResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
+  /artistas/{id}:
+    get:
+      tags: [Artistas]
+      summary: Obtener artista por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Artista encontrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ArtistaGetResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
+  # ==================== ÁLBUMES ====================
+  /albumes:
+    get:
+      tags: [Álbumes]
+      summary: Listar álbumes (opcional filtrar por artista)
+      parameters:
+        - name: artistaId
+          in: query
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Álbumes obtenidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  artista:
+                    oneOf:
+                      - $ref: '#/components/schemas/ArtistaResponse'
+                      - type: 'null'
+                  albumes:
+                    type: array
+                    items: { $ref: '#/components/schemas/AlbumResponse' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+    post:
+      tags: [Álbumes]
+      summary: Crear álbum
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AlbumCreate' }
+      responses:
+        '201':
+          description: Álbum creado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AlbumCreateResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
+  /albumes/{id}:
+    get:
+      tags: [Álbumes]
+      summary: Obtener álbum por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Álbum encontrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AlbumGetResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
+  /albumes/{id}/canciones:
+    get:
+      tags: [Álbumes]
+      summary: Listar canciones de un álbum
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Canciones del álbum
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AlbumSongsResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
+  # ==================== CANCIONES ====================
+  /canciones:
+    get:
+      tags: [Canciones]
+      summary: Listar canciones (un único filtro permitido)
+      description: "Filtros válidos (solo uno): genero (string), artistaId (int), albumId (int)"
+      parameters:
+        - name: genero
+          in: query
+          schema: { type: string }
+        - name: artistaId
+          in: query
+          schema: { type: integer }
+        - name: albumId
+          in: query
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Canciones encontradas
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CancionesListResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+    post:
+      tags: [Canciones]
+      summary: Crear canción
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CancionCreate' }
+      responses:
+        '201':
+          description: Canción creada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CancionCreateResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
+  /canciones/{id}:
+    get:
+      tags: [Canciones]
+      summary: Obtener canción por ID (incluye álbum, artista y géneros)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Canción encontrada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CancionDetalleResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+    put:
+      tags: [Canciones]
+      summary: Actualizar canción
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CancionUpdate' }
+      responses:
+        '200':
+          description: Canción actualizada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CancionUpdateResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
+  /canciones/{id}/generos:
+    post:
+      tags: [Canciones]
+      summary: Asociar género a canción
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/GeneroAsociar' }
+      responses:
+        '201':
+          description: Género asociado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CancionGeneroAsociadoResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
+  /canciones/{id}/generos/{idGenero}:
+    delete:
+      tags: [Canciones]
+      summary: Desasociar género de canción
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+        - name: idGenero
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Género desasociado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CancionGeneroDesasociadoResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
+  # ==================== GÉNEROS ====================
+  /generos:
+    get:
+      tags: [Géneros]
+      summary: Listar géneros
+      responses:
+        '200':
+          description: Géneros obtenidos
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GenerosListResponse' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+    post:
+      tags: [Géneros]
+      summary: Crear género
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/GeneroCreate' }
+      responses:
+        '201':
+          description: Género creado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GeneroCreateResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '500': { $ref: '#/components/responses/InternalServerError' }
+
+
 components:
   schemas:
     # ==================== SCHEMAS BÁSICOS ====================
     UsuarioCreate:
       type: object
-      required:
-        - email
-        - password
-        - fecha_nac
-        - sexo
-        - id_pais
-        - tipo_usuario_actual
+      required: [usuario, nombreCompleto, email, password]
       properties:
-        email:
-          type: string
-          format: email
-          example: ana.garcia@example.com
-        password:
-          type: string
-          minLength: 8
-          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]'
-          example: Secr3t0!
-          description: Debe contener al menos una mayúscula, minúscula, número y carácter especial
-        fecha_nac:
-          type: string
-          format: date
-          example: '1995-05-20'
-        sexo:
-          type: string
-          enum: [M, F]
-          example: F
-        cp:
-          type: string
-          maxLength: 10
-          example: '4600'
-        id_pais:
-          type: integer
-          example: 1
-        tipo_usuario_actual:
-          type: integer
-          example: 2
+        usuario: { type: string, example: anagarcia }
+        nombreCompleto: { type: string, example: Ana Garcia }
+        email: { type: string, format: email, example: ana.garcia@example.com }
+        password: { type: string, minLength: 8, example: Secr3t0! }
+        fecha_nacimiento: { type: string, format: date, example: '1995-05-20' }
+        sexo: { type: string, enum: [M, F], example: F }
+        codigo_postal: { type: string, example: '4600' }
+        id_pais: { type: integer, example: 1 }
+        tipo_usuario: { type: integer, example: 2 }
 
     UsuarioResponse:
       type: object
       properties:
-        id_usuario:
-          type: integer
-          example: 1
-        email:
-          type: string
-          example: ana.garcia@example.com
-        fecha_nac:
-          type: string
-          format: date
-          example: '1995-05-20'
-        sexo:
-          type: string
-          example: F
-        cp:
-          type: string
-          example: '4600'
-        id_pais:
-          type: integer
-          example: 1
-        tipo_usuario_actual:
-          type: integer
-          example: 2
-        fecha_ult_mod_password:
-          type: string
-          format: date-time
-        activo:
-          type: boolean
-          example: true
-        fecha_creacion:
-          type: string
-          format: date-time
+        id_usuario: { type: integer, example: 1 }
+        usuario: { type: string, example: anagarcia }
+        nombreCompleto: { type: string, example: Ana Garcia }
+        email: { type: string, example: ana.garcia@example.com }
+        fecha_nacimiento: { type: string, format: date }
+        sexo: { type: string, enum: [M, F] }
+        codigo_postal: { type: string }
+        id_pais: { type: integer }
+        tipo_usuario: { type: integer }
+        fecha_modificacion_pass: { type: string, format: date-time }
+        activo: { type: boolean }
+        fecha_creacion: { type: string, format: date-time }
+    UsuarioUpdate:
+      type: object
+      properties:
+        usuario: { type: string }
+        nombreCompleto: { type: string }
+        email: { type: string }
+        password: { type: string }
+        fecha_nacimiento: { type: string, format: date }
+        sexo: { type: string, enum: [M, F] }
+        codigo_postal: { type: string }
+        id_pais: { type: integer }
+        tipo_usuario: { type: integer }
+
+    UsuarioUpdateResponse:
+      type: object
+      properties:
+        mensaje: { type: string, example: Usuario actualizado correctamente. }
+        usuario: { $ref: '#/components/schemas/UsuarioResponse' }
+
+    UsuarioDeletedResponse:
+      type: object
+      properties:
+        mensaje: { type: string, example: Usuario eliminado con Borrado Lógico correctamente. }
+
+    ArtistaResponse:
+      type: object
+      properties:
+        id_artista: { type: integer, example: 1 }
+        nombre: { type: string, example: Fito Páez }
+
+    ArtistaCreate:
+      type: object
+      required: [nombre]
+      properties:
+        nombre: { type: string, example: Fito Páez }
+
+    ArtistaCreateResponse:
+      type: object
+      properties:
+        mensaje: { type: string, example: Artista creado correctamente. }
+        artista: { $ref: '#/components/schemas/ArtistaResponse' }
+
+    ArtistaGetResponse:
+      type: object
+      properties:
+        mensaje: { type: string }
+        artista: { $ref: '#/components/schemas/ArtistaResponse' }
+
+    AlbumResponse:
+      type: object
+      properties:
+        id_album: { type: integer, example: 10 }
+        titulo: { type: string, example: El Amor Después Del Amor }
+        id_artista: { type: integer, example: 1 }
+
+    AlbumCreate:
+      type: object
+      required: [titulo, id_artista]
+      properties:
+        titulo: { type: string, example: El Amor Después Del Amor }
+        id_artista: { type: integer, example: 1 }
+
+    AlbumCreateResponse:
+      type: object
+      properties:
+        mensaje: { type: string, example: Álbum creado correctamente. }
+        nuevoAlbum: { $ref: '#/components/schemas/AlbumResponse' }
+
+    AlbumGetResponse:
+      type: object
+      properties:
+        mensaje: { type: string }
+        album: { $ref: '#/components/schemas/AlbumResponse' }
+
+    AlbumSongsResponse:
+      type: object
+      properties:
+        mensaje: { type: string }
+        album: { type: string, example: El Amor Después Del Amor }
+        canciones:
+          type: array
+          items: { $ref: '#/components/schemas/CancionResponse' }
+
+    CancionResponse:
+      type: object
+      properties:
+        id_cancion: { type: integer, example: 100 }
+        titulo: { type: string, example: Mariposa Tecknicolor }
+        duracion: { type: integer, example: 215 }
+        id_album: { type: integer, nullable: true, example: 10 }
+        reproducciones: { type: integer, example: 1500 }
+        likes: { type: integer, example: 250 }
+
+    CancionCreate:
+      type: object
+      required: [titulo]
+      properties:
+        titulo: { type: string }
+        duracion: { type: integer, example: 215 }
+        id_album: { type: integer, nullable: true }
+        reproducciones: { type: integer, example: 0 }
+        likes: { type: integer, example: 0 }
+
+    CancionCreateResponse:
+      type: object
+      properties:
+        mensaje: { type: string }
+        nuevaCancion: { $ref: '#/components/schemas/CancionResponse' }
+
+    CancionDetalleResponse:
+      type: object
+      properties:
+        mensaje: { type: string }
+        cancion:
+          allOf:
+            - $ref: '#/components/schemas/CancionResponse'
+            - type: object
+              properties:
+                album:
+                  type: object
+                  properties:
+                    id_album: { type: integer }
+                    titulo: { type: string }
+                    artista:
+                      type: object
+                      properties:
+                        id_artista: { type: integer }
+                        nombre: { type: string }
+                generos:
+                  type: array
+                  items: { $ref: '#/components/schemas/GeneroResponse' }
+
+    CancionUpdate:
+      type: object
+      properties:
+        titulo: { type: string }
+        duracion: { type: integer }
+        id_album: { type: integer }
+        reproducciones: { type: integer }
+        likes: { type: integer }
+
+    CancionUpdateResponse:
+      type: object
+      properties:
+        mensaje: { type: string }
+        cancion: { $ref: '#/components/schemas/CancionResponse' }
+
+    GeneroResponse:
+      type: object
+      properties:
+        id_genero: { type: integer, example: 5 }
+        nombre: { type: string, example: Rock }
+
+    GenerosListResponse:
+      type: object
+      properties:
+        mensaje: { type: string }
+        generos:
+          type: array
+          items: { $ref: '#/components/schemas/GeneroResponse' }
+
+    GeneroCreate:
+      type: object
+      required: [nombre]
+      properties:
+        nombre: { type: string, example: Rock }
+
+    GeneroCreateResponse:
+      type: object
+      properties:
+        mensaje: { type: string }
+        genero: { $ref: '#/components/schemas/GeneroResponse' }
+
+    GeneroAsociar:
+      type: object
+      required: [id_genero]
+      properties:
+        id_genero: { type: integer, example: 5 }
+
+    CancionGeneroAsociadoResponse:
+      type: object
+      properties:
+        message: { type: string, example: Género asociado exitosamente. }
+        id_cancion: { type: integer }
+        generoAsociado: { type: integer }
+
+    CancionGeneroDesasociadoResponse:
+      type: object
+      properties:
+        mensaje: { type: string, example: Género desasociado exitosamente. }
+        generoDesasociado: { type: integer }
 
     # ==================== SCHEMAS PARA EJERCICIOS ====================
     CancionPopularPorPais:

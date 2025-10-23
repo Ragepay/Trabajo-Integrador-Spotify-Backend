@@ -1,5 +1,5 @@
 {
-	"name": "TRABAJO-INTEGRADOR-SPOTIFY-BACKEND",
+	"name": "trabajo-integrador-spotify-backend",
 	"version": "1.0.0",
 	"description": "plataforma de streaming musical (estilo Spotify) con Node.js + Express + MySQL, que contemple un modelo relacional correcto, endpoints REST bien documentados y validaciones para prevenir errores frecuentes",
 	"main": "index.js",
@@ -7,7 +7,7 @@
 	"scripts": {
 		"start": "node index.js",
 		"dev": "node --watch index.js",
-		"push": "git add . && git commit -m \"14-feat: creacion de los endpoints de Generos y sus controladores.\" && git push"
+		"push": "git add . && git commit -m \"15-feat: creacion e implementacion de documentacion con swagger.\" && git push"
 	},
 	"dependencies": {
 		"bcrypt": "^6.0.0",
@@ -16,6 +16,8 @@
 		"jsonwebtoken": "^9.0.2",
 		"morgan": "^1.10.0",
 		"mysql2": "^3.15.1",
-		"sequelize": "^6.37.7"
+		"sequelize": "^6.37.7",
+		"swagger-ui-express": "^5.0.0",
+		"yamljs": "^0.3.0"
 	}
 }

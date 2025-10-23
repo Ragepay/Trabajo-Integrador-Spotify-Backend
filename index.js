@@ -1,9 +1,12 @@
 import express from "express";
 import morgan from "morgan";
+import cors from "cors";
 import apiRouter from "./src/routes/indexApi.js";
 import errorHandler from "./src/middlewares/errorHandler.mid.js";
 import pathHandler from "./src/middlewares/pathHandler.mid.js";
 import { sequelize } from "./src/config/database.js";
+import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
 
 
 // Importar dotenv para leer variables de entorno.
@@ -20,6 +23,15 @@ app.disable("x-powered-by");
 app.use(express.json()); // Para leer el body de las peticiones.
 app.use(express.urlencoded({ extended: true })); // Para leer el body de las peticiones.
 app.use(morgan("dev")); // Logger para ver las peticiones en consola.
+app.use(cors({
+    origin: "*",
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Swagger Documentation
+const swaggerDocument = YAML.load("./src/docs/swagger.yaml");
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Rutas
 app.use("/api/v1", apiRouter);
@@ -38,7 +50,7 @@ async function ready() {
         await sequelize.sync();
         console.log("📦 Modelos sincronizados.");
         // Datos del Servidor.
-        console.log(`MODE: ${NODE_ENV} | PORT: ${PORT}\nhttp://localhost:${PORT}/api/v1`);
+        console.log(`MODE: ${NODE_ENV} | PORT: ${PORT}\nhttp://localhost:${PORT}/api-docs`);
     } catch (error) {
         console.error("❌ Error al conectar con la base de datos:", error);
         process.exit(1);
