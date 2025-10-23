@@ -33,7 +33,8 @@ const Playlist = sequelize.define('Playlist', {
   },
   fecha_eliminacion: {
     type: DataTypes.DATE,
-    allowNull: true
+    allowNull: true,
+    defaultValue: null
   }
 }, {
   tableName: 'playlist',

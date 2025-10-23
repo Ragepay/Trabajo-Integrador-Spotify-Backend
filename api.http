@@ -216,7 +216,14 @@ GET {{baseUrl}}/generos
 ### ==========================
 ### PLAYLISTS
 ### ==========================
-# Crear playlist (activa por defecto)
+### Listar playlists
+GET {{baseUrl}}/playlists
+
+### Listar playlists por id
+GET {{baseUrl}}/playlists/1
+
+
+### Crear playlist (activa por defecto)
 POST {{baseUrl}}/playlists
 Content-Type: {{json}}
 
@@ -226,16 +233,15 @@ Content-Type: {{json}}
 }
 
 ### Agregar canción a playlist
-POST {{baseUrl}}/playlists/1/canciones
+POST {{baseUrl}}/playlists/4/canciones
 Content-Type: {{json}}
 
 {
-  "id_cancion": 1,
-  "orden": 1
+  "id_cancion": 7
 }
 
 ### Quitar canción de playlist
-DELETE {{baseUrl}}/playlists/1/canciones/1
+DELETE {{baseUrl}}/playlists/4/canciones/7
 
 ### Eliminar (soft-delete) playlist → debe enviar fecha_eliminada
 PUT {{baseUrl}}/playlists/1
