@@ -367,7 +367,7 @@ GET {{baseUrl}}/pagos?usuarioId=1&desde=2020-09-01&hasta=2025-12-31
 GET {{baseUrl}}/vistas/canciones-populares-por-pais
 
 ### EJERCICIO 1: Con filtros opcionales (por país específico)
-GET {{baseUrl}}/vistas/canciones-populares-por-pais?pais=Argentina
+GET {{baseUrl}}/vistas/canciones-populares-por-pais?pais=Argentina&limit=20
 
 ### EJERCICIO 1: Con límite de resultados
 GET {{baseUrl}}/vistas/canciones-populares-por-pais?limit=10

@@ -333,28 +333,23 @@ paths:
         **JOINs utilizados**: 
         cancion → album → artista, playlist_cancion → playlist → usuario → pais
         
-        **Agregaciones**: SUM(reproducciones), COUNT(playlists)
+        **Agregaciones**: SUM(reproducciones), COUNT(playlists). Si no se especifica país se devuelven resultados para todos los países.
       parameters:
         - name: pais
           in: query
-          description: Filtrar por país específico
+          required: false
+          description: Filtrar por país específico (opcional). Si se omite, se incluyen todos.
           schema:
             type: string
             example: Argentina
         - name: limit
           in: query
-          description: Límite de resultados
+          required: false
+          description: Límite de resultados (por defecto 50)
           schema:
             type: integer
             default: 50
             minimum: 1
-        - name: orden
-          in: query
-          description: Campo de ordenamiento
-          schema:
-            type: string
-            enum: [reproducciones, apariciones]
-            default: reproducciones
       responses:
         '200':
           description: Datos de canciones populares por país
@@ -366,6 +361,13 @@ paths:
                   mensaje:
                     type: string
                     example: "Canciones populares por país obtenidas exitosamente"
+                  filtro_pais:
+                    type: string
+                    nullable: true
+                    example: Argentina
+                  limit:
+                    type: integer
+                    example: 50
                   results:
                     type: array
                     items:
@@ -434,6 +436,12 @@ paths:
                   mensaje:
                     type: string
                     example: "Ingresos por artista y discográfica obtenidos exitosamente"
+                  page:
+                    type: integer
+                    example: 1
+                  limit:
+                    type: integer
+                    example: 20
                   results:
                     type: array
                     items:

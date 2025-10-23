@@ -5,7 +5,14 @@ class VistasController {
   // Vista 1: Canciones Populares por País
   static async cancionesPopularesPorPais(req, res) {
     try {
-      // Query SQL para obtener las canciones populares por país (pasadas por el profe)
+      // Parámetros: pais opcional, limit opcional
+      const pais = (req.query.pais || '').trim();
+      const limitParam = parseInt(req.query.limit, 10);
+      const finalLimit = Number.isInteger(limitParam) && limitParam > 0 ? limitParam : 50;
+
+      // Construir cláusula WHERE solo si se provee pais
+      const whereClause = pais ? `WHERE p.nombre = '${pais}'` : '';
+
       const query = `
         SELECT 
           c.titulo AS nombre_cancion,
@@ -21,16 +28,22 @@ class VistasController {
         LEFT JOIN Playlist pl ON pc.id_playlist = pl.id_playlist AND pl.eliminada = 0
         LEFT JOIN Usuario u ON pl.id_usuario = u.id_usuario
         LEFT JOIN Pais p ON u.id_pais = p.id_pais
-        GROUP BY p.nombre, c.id_cancion
-        ORDER BY p.nombre ASC, total_reproducciones DESC
+        ${whereClause}
+        GROUP BY c.id_cancion, c.titulo, ar.nombre, al.titulo, p.nombre
+        ORDER BY total_reproducciones DESC
+        LIMIT :limit
       `;
 
       // Ejecutar la consulta
-      const [results] = await sequelize.query(query);
+      const [results] = await sequelize.query(query, {
+        replacements: { pais: pais || null, limit: finalLimit }
+      });
 
       // Procesar los resultados
       res.status(200).json({
         mensaje: "Canciones populares por país obtenidas exitosamente",
+        filtro_pais: pais || null,
+        limit: finalLimit,
         results
       });
 
@@ -45,7 +58,31 @@ class VistasController {
   // Vista 2: Ingresos por Artista y Discográfica
   static async ingresosPorArtistaDiscografica(req, res) {
     try {
-      // Query SQL para obtener los ingresos por artista y discográficas (pasadas por el profe)
+      // Parámetros
+      const pais = (req.query.pais || '').trim();
+      const minimoIngresos = parseFloat(req.query.minimo_ingresos);
+      const orden = (req.query.orden || 'ingresos').trim();
+      const page = parseInt(req.query.page, 10) || 1;
+      const limit = parseInt(req.query.limit, 10) || 20;
+
+      if (page < 1) {
+        return res.status(400).json({ error: "El parámetro 'page' debe ser >= 1." });
+      }
+      if (limit < 1) {
+        return res.status(400).json({ error: "El parámetro 'limit' debe ser >= 1." });
+      }
+
+      const offset = (page - 1) * limit;
+      const camposOrden = { ingresos: 'total_ingresos', suscripciones: 'cantidad_suscripciones_activas', canciones: 'total_canciones' };
+      const campoOrdenSQL = camposOrden[orden] || camposOrden.ingresos;
+
+      // Construir condiciones dinámicas
+      const condiciones = ["s.fecha_renovacion > NOW()"];
+      if (pais) condiciones.push("p.nombre = :pais");
+      if (!isNaN(minimoIngresos) && minimoIngresos > 0) condiciones.push("SUM(pg.importe) >= :minimoIngresos");
+      const whereClause = condiciones.length ? `WHERE ${condiciones.join(" AND ")}` : '';
+
+      // Query SQL parametrizada realista con joins relevantes
       const query = `
         SELECT
           ar.nombre AS nombre_artista,
@@ -58,24 +95,33 @@ class VistasController {
         FROM Pagos pg
         JOIN Suscripcion s ON pg.id_suscripcion = s.id_suscripcion
         JOIN Usuario u ON s.id_usuario = u.id_usuario
-        JOIN Album al ON EXISTS (
-          SELECT 1 FROM Cancion c2 WHERE c2.id_album = al.id_album
-        )
-        JOIN Artista ar ON al.id_artista = ar.id_artista
-        JOIN Discografica d ON al.id_discografica = d.id_discografica
-        JOIN Pais p ON d.id_pais = p.id_pais
-        LEFT JOIN Cancion c ON c.id_album = al.id_album
-        WHERE s.fecha_renovacion > NOW()
+        LEFT JOIN Playlist pl ON pl.id_usuario = u.id_usuario AND pl.eliminada = 0
+        LEFT JOIN PlaylistCancion pc ON pc.id_playlist = pl.id_playlist
+        LEFT JOIN Cancion c ON c.id_cancion = pc.id_cancion
+        LEFT JOIN Album al ON c.id_album = al.id_album
+        LEFT JOIN Artista ar ON al.id_artista = ar.id_artista
+        LEFT JOIN Discografica d ON al.id_discografica = d.id_discografica
+        LEFT JOIN Pais p ON d.id_pais = p.id_pais
+        ${whereClause}
         GROUP BY ar.nombre, d.nombre, p.nombre
-        ORDER BY total_ingresos DESC
+        ORDER BY ${campoOrdenSQL} DESC
+        LIMIT :limit OFFSET :offset
       `;
 
-      // Ejecutar la consulta
-      const [results] = await sequelize.query(query);
+      const [results] = await sequelize.query(query, {
+        replacements: {
+          pais: pais || null,
+          minimoIngresos: !isNaN(minimoIngresos) ? minimoIngresos : null,
+          limit,
+          offset
+        }
+      });
 
       // Procesar los resultados
       res.status(200).json({
         mensaje: "Ingresos por artista y discográfica obtenidos exitosamente",
+        page,
+        limit,
         results
       });
     } catch (error) {
