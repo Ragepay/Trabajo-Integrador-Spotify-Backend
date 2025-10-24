@@ -10,8 +10,17 @@ class VistasController {
       const limitParam = parseInt(req.query.limit, 10);
       const finalLimit = Number.isInteger(limitParam) && limitParam > 0 ? limitParam : 50;
 
+      let existePais = false;
+      if (pais) {
+        const [result] = await sequelize.query(
+          "SELECT COUNT(*) AS total FROM Pais WHERE nombre = :pais",
+          { replacements: { pais: pais }, type: sequelize.QueryTypes.SELECT }
+        );
+        existePais = result.total > 0;
+      }
+
       // Construir cláusula WHERE solo si se provee pais
-      const whereClause = pais ? `WHERE p.nombre = '${pais}'` : '';
+      const whereClause = existePais ? `WHERE p.nombre = '${pais}'` : '';
 
       const query = `
         SELECT 
@@ -55,7 +64,6 @@ class VistasController {
     }
   }
 
-  // Vista 2: Ingresos por Artista y Discográfica
   static async ingresosPorArtistaDiscografica(req, res) {
     try {
       // Parámetros
@@ -65,22 +73,27 @@ class VistasController {
       const page = parseInt(req.query.page, 10) || 1;
       const limit = parseInt(req.query.limit, 10) || 20;
 
-      if (page < 1) {
-        return res.status(400).json({ error: "El parámetro 'page' debe ser >= 1." });
-      }
-      if (limit < 1) {
-        return res.status(400).json({ error: "El parámetro 'limit' debe ser >= 1." });
+      // Verificar existencia del país si se proporciona
+      let existePais = false;
+      if (pais) {
+        const [result] = await sequelize.query(
+          "SELECT COUNT(*) AS total FROM Pais WHERE nombre = :pais",
+          { replacements: { pais: pais }, type: sequelize.QueryTypes.SELECT }
+        );
+        existePais = result.total > 0;
       }
 
-      const offset = (page - 1) * limit;
+      // Determinar campo de ordenamiento
       const camposOrden = { ingresos: 'total_ingresos', suscripciones: 'cantidad_suscripciones_activas', canciones: 'total_canciones' };
       const campoOrdenSQL = camposOrden[orden] || camposOrden.ingresos;
 
       // Construir condiciones dinámicas
-      const condiciones = ["s.fecha_renovacion > NOW()"];
-      if (pais) condiciones.push("p.nombre = :pais");
-      if (!isNaN(minimoIngresos) && minimoIngresos > 0) condiciones.push("SUM(pg.importe) >= :minimoIngresos");
+      const condiciones = [];
+      const Having = [];
+      if (existePais) condiciones.push("p.nombre = :pais");
+      if (!isNaN(minimoIngresos) && minimoIngresos > 0) Having.push("SUM(pg.importe) >= :minimoIngresos");
       const whereClause = condiciones.length ? `WHERE ${condiciones.join(" AND ")}` : '';
+      const havingClause = Having.length ? `HAVING ${Having.join(" AND ")}` : '';
 
       // Query SQL parametrizada realista con joins relevantes
       const query = `
@@ -104,16 +117,17 @@ class VistasController {
         LEFT JOIN Pais p ON d.id_pais = p.id_pais
         ${whereClause}
         GROUP BY ar.nombre, d.nombre, p.nombre
+        ${havingClause}
         ORDER BY ${campoOrdenSQL} DESC
-        LIMIT :limit OFFSET :offset
+        LIMIT :limit
       `;
 
+      // Ejecutar la consulta
       const [results] = await sequelize.query(query, {
         replacements: {
           pais: pais || null,
           minimoIngresos: !isNaN(minimoIngresos) ? minimoIngresos : null,
-          limit,
-          offset
+          limit
         }
       });
 
@@ -122,6 +136,7 @@ class VistasController {
         mensaje: "Ingresos por artista y discográfica obtenidos exitosamente",
         page,
         limit,
+        filtro: campoOrdenSQL,
         results
       });
     } catch (error) {

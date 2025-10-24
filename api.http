@@ -41,11 +41,11 @@ GET {{baseUrl}}/usuarios?page=1&limit=20
 GET {{baseUrl}}/usuarios/1
 
 ### Actualizar usuario (cambio de password → actualiza fecha_ult_mod_password)
-PUT {{baseUrl}}/usuarios/1
+PUT {{baseUrl}}/usuarios/20
 Content-Type: {{json}}
 
 {
-  //"usuario": "mortiz",
+  "fecha_modificacion_pass": "2024-10-01",
   //"email":"mortiz@email.com",
   "password": "Nuev4Clave!"
 }
@@ -72,7 +72,7 @@ POST {{baseUrl}}/artistas
 Content-Type: {{json}}
 
 {
-  "nombre": "Fito Paez",
+  "nombre": "Fito Paezz",
   "imagen_url": "https://cdn.example.com/fito.jpg"
 }
 
@@ -108,13 +108,13 @@ Content-Type: {{json}}
 }
 
 ### Listar álbumes por artista
-GET {{baseUrl}}/albumes?artistaId=4
+GET {{baseUrl}}/albumes?artistaId=7
 
 ### Listar un álbum por id
 GET {{baseUrl}}/albumes/23
 
 ### Canciones de un álbum
-GET {{baseUrl}}/albumes/3/canciones
+GET {{baseUrl}}/albumes/23/canciones
 
 
 
@@ -144,7 +144,7 @@ Content-Type: {{json}}
 
 {
   "titulo": "DuracionMala",
-  "duracion": 3.25,
+  "duracion": 180,
   "id_album": 1
 }
 
@@ -196,7 +196,7 @@ POST {{baseUrl}}/generos
 Content-Type: {{json}}
 
 {
-  "nombre": "Cumbia 420 "
+  "nombre": "Cumbia 420      "
  
 }
 
@@ -220,7 +220,7 @@ GET {{baseUrl}}/generos
 GET {{baseUrl}}/playlists
 
 ### Listar playlists por id
-GET {{baseUrl}}/playlists/1
+GET {{baseUrl}}/playlists/4
 
 
 ### Crear playlist (activa por defecto)
@@ -233,7 +233,7 @@ Content-Type: {{json}}
 }
 
 ### Agregar canción a playlist
-POST {{baseUrl}}/playlists/4/canciones
+POST {{baseUrl}}/playlists/1/canciones
 Content-Type: {{json}}
 
 {
@@ -241,7 +241,7 @@ Content-Type: {{json}}
 }
 
 ### Quitar canción de playlist
-DELETE {{baseUrl}}/playlists/4/canciones/7
+DELETE {{baseUrl}}/playlists/1/canciones/7
 
 ### Eliminar (soft-delete) playlist → debe enviar fecha_eliminada
 PUT {{baseUrl}}/playlists/1
@@ -342,7 +342,7 @@ Content-Type: {{json}}
   "id_suscripcion": 1,
   "id_datos_pago": 1,
   "fecha_pago": "2025-10-01",
-  "importe": 100
+  "importe": 100000
 }
 
 ### Listar pagos por usuario y rango
@@ -367,7 +367,7 @@ GET {{baseUrl}}/pagos?usuarioId=1&desde=2020-09-01&hasta=2025-12-31
 GET {{baseUrl}}/vistas/canciones-populares-por-pais
 
 ### EJERCICIO 1: Con filtros opcionales (por país específico)
-GET {{baseUrl}}/vistas/canciones-populares-por-pais?pais=Argentina&limit=20
+GET {{baseUrl}}/vistas/canciones-populares-por-pais?pais=Colombia&limit=5
 
 ### EJERCICIO 1: Con límite de resultados
 GET {{baseUrl}}/vistas/canciones-populares-por-pais?limit=10
@@ -375,16 +375,18 @@ GET {{baseUrl}}/vistas/canciones-populares-por-pais?limit=10
 ### EJERCICIO 2: Ingresos por artista y discográfica
 # Analizar ingresos generados por cada combinación artista-discográfica
 # Incluye: nombre_artista, nombre_discografica, nombre_pais_discografica, total_ingresos, cantidad_suscripciones_activas, total_canciones, promedio_reproducciones
+
+### Traer todos los registros
 GET {{baseUrl}}/vistas/ingresos-por-artista-discografica
 
 ### EJERCICIO 2: Con filtro por país de discográfica
-GET {{baseUrl}}/vistas/ingresos-por-artista-discografica?pais=Argentina
+GET {{baseUrl}}/vistas/ingresos-por-artista-discografica?pais=Holanda
 
 ### EJERCICIO 2: Con filtro por monto mínimo de ingresos
-GET {{baseUrl}}/vistas/ingresos-por-artista-discografica?minimo_ingresos=50
+GET {{baseUrl}}/vistas/ingresos-por-artista-discografica?minimo_ingresos=1001
 
 ### EJERCICIO 2: Con ordenamiento por cantidad de suscripciones
-GET {{baseUrl}}/vistas/ingresos-por-artista-discografica?orden=suscripciones
+GET {{baseUrl}}/vistas/ingresos-por-artista-discografica?orden=suscripciones&pais=Holanda
 
 ### ==========================
 ### PRUEBAS ADICIONALES PARA VISTAS
@@ -397,4 +399,4 @@ GET {{baseUrl}}/vistas/canciones-populares-por-pais?pais=PaisInexistente
 GET {{baseUrl}}/vistas/ingresos-por-artista-discografica?page=1&limit=5
 
 ### Probar combinación de filtros
-GET {{baseUrl}}/vistas/canciones-populares-por-pais?pais=Argentina&limit=3&orden=reproducciones
+GET {{baseUrl}}/vistas/canciones-populares-por-pais?pais=Argentina&limit=3
